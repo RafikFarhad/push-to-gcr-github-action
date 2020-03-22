@@ -1,0 +1,13 @@
+name: Push to GCR Github Action
+on:
+  push
+jobs:
+  build-and-push-to-gcr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: RafikFarhad/push-to-gcr-github-action@v1
+        with:
+          gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
+          registry: gcr.io
+          project_name: my-awesome-project
+          image_name: server-end

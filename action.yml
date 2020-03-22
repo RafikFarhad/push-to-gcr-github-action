@@ -1,0 +1,34 @@
+name: 'Push to GCR Github Action'
+author: Rafik Farhad <rafikfarhad@gmail.com>
+description: An action that build docker image and push to Google Cloud Registry
+branding:
+  icon: feather
+  color: gray-dark
+inputs:
+  gcloud_service_key:
+    description: Google cloud service key as json
+    required: true
+    default: '{}'
+  registry:
+    description: The registry where the image should be pushed
+    required: false
+    default: gcr.io
+  project_name:
+    description: The project name
+    required: true
+    default: my-awesome-project
+  image_name:
+    description: The image name
+    required: true
+    default: backend-server
+  image_tag:
+    description: Tag name
+    required: false
+    default: latest
+  dockerfile:
+    description: Dockerfile that will build the image
+    required: false
+    default: ./Dockerfile
+runs:
+  using: docker
+  image: Dockerfile
