@@ -6,11 +6,8 @@ echo "Fully qualified image name: $IMAGE_NAME"
 
 echo $GCLOUD_SERVICE_KEY > /tmp/key.json
 
-echo "Activiting google cloud auth"
-gcloud auth activate-service-account --quiet --key-file /tmp/key.json
-
-echo "Configuring docker"
-gcloud auth configure-docker --quiet
+echo "Authenticating docker to gcloud"
+echo /tmp/key.json | docker login -u _json_key --password-stdin https://$INPUT_REGISTRY
 
 echo "Building image"
 docker build -t $IMAGE_NAME . --file $INPUT_DOCKERFILE
