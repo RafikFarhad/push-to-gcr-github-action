@@ -10,7 +10,7 @@ docker build -t $IMAGE_NAME . --file $INPUT_DOCKERFILE
 echo "Authenticating docker to gcloud"
 echo $INPUT_GCLOUD_SERVICE_KEY | python -m base64 -d > /tmp/key.json
 
-ls /tmp/key.json
+cat /tmp/key.json | grep project_id
 
 if [ -f "/tmp/key.json" ]; then
     echo /tmp/key.json | docker login -u _json_key --password-stdin https://$INPUT_REGISTRY
@@ -20,6 +20,8 @@ else
 fi
 
 echo "Pushing image"
-docker push $IMAGE_NAME
-
-echo "Process complete."
+if ! docker push $IMAGE_NAME; then
+    echo "Pushing failed. Exiting..."
+else
+    echo "Process complete."
+fi
