@@ -13,7 +13,7 @@ echo "Configuring docker"
 gcloud auth configure-docker --quiet
 
 echo "Building image"
-docker build -t $IMAGE_NAME --file $INPUT_DOCKERFILE
+docker build -t $IMAGE_NAME . --file $INPUT_DOCKERFILE
 
 echo "Pushing image"
 docker push $IMAGE_NAME
