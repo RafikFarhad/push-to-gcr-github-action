@@ -8,7 +8,7 @@ echo "Building image"
 docker build -t $IMAGE_NAME . --file $INPUT_DOCKERFILE
 
 echo "Authenticating docker to gcloud"
-echo $INPUT_GCLOUD_SERVICE_KEY > /tmp/key.json
+echo $INPUT_GCLOUD_SERVICE_KEY | base64 --decode > /tmp/key.json
 echo /tmp/key.json | docker login -u _json_key --password-stdin https://$INPUT_REGISTRY
 
 echo "Pushing image"
