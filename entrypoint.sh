@@ -11,7 +11,7 @@ cat /tmp/key.json | grep project_id
 
 cat /tmp/key.json | grep private_key_id
 
-if echo /tmp/key.json | docker login -u _json_key --password-stdin https://$INPUT_REGISTRY; then
+if cat /tmp/key.json | docker login -u _json_key --password-stdin https://$INPUT_REGISTRY; then
     echo "Logged in"
 else
     echo "Docker login failed. Exiting..."
