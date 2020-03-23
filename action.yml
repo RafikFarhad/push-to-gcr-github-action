@@ -1,4 +1,4 @@
-name: 'Push to GCR Github Action'
+name: Push to GCR Github Action
 author: Rafik Farhad <rafikfarhad@gmail.com>
 description: An action that build docker image and push to Google Cloud Registry
 branding:
@@ -8,7 +8,6 @@ inputs:
   gcloud_service_key:
     description: Google cloud service key as json
     required: true
-    default: '{}'
   registry:
     description: The registry where the image should be pushed
     required: false
