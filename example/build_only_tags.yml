@@ -16,5 +16,5 @@ jobs:
         registry: gcr.io
         project_name: my-awesome-project
         image_name: server-end
-        image_tag: ${{ steps.get_tag_name.outputs.GIT_TAG_NAME}}
+        image_tag: ${{ steps.get_tag_name.outputs.GIT_TAG_NAME }}
         dockerfile: ./build/Dockerfile
