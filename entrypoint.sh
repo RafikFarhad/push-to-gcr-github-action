@@ -14,12 +14,18 @@ else
 fi
 
 echo "Building image ..."
-docker build -t $IMAGE_NAME . --file $INPUT_DOCKERFILE
+
+if docker build -t $IMAGE_NAME . --file $INPUT_DOCKERFILE; then
+    echo "Image built ..."
+else
+    echo "Image building failed. Exiting..."
+    exit 1
+fi
 
 echo "Pushing image ..."
 if ! docker push $IMAGE_NAME; then
     echo "Pushing failed. Exiting..."
+    exit 1
 else
-    
     echo "Process complete."
 fi
