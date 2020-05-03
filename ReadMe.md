@@ -24,7 +24,11 @@ The tag for the image. Default: `latest`. To use the pushed `Tag Name` see the e
 NB: The 
 
 ### `dockerfile`
-The image building Dockerfile. Default: `./Dockerfile`.
+The image building Dockerfile. Default: `./Dockerfile`. 
+If context is changed, `Dockerfile` from context folder will be used.
+
+### `context`
+The docker build context. Default: `.`
 
 ## Example usage
 Put desired yml section in the `.github/workflows/build.yml` file
