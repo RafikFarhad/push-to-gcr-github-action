@@ -15,7 +15,9 @@ fi
 
 echo "Building image ..."
 
-[ -z ${INPUT_DOCKERFILE+x} ] && FILE_ARG="" || FILE_ARG="--file $INPUT_DOCKERFILE"
+[ -z $INPUT_DOCKERFILE ] && FILE_ARG="" || FILE_ARG="--file $INPUT_DOCKERFILE"
+
+echo "docker build -t $IMAGE_NAME $INPUT_CONTEXT $FILE_ARG"
 
 if docker build -t $IMAGE_NAME $INPUT_CONTEXT $FILE_ARG; then
     echo "Image built ..."
