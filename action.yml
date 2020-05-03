@@ -24,10 +24,13 @@ inputs:
     description: Tag name
     required: false
     default: latest
+  context:
+    description: Docker build context
+    required: false
+    default: .
   dockerfile:
     description: Dockerfile that will build the image
     required: false
-    default: ./Dockerfile
 runs:
   using: docker
   image: Dockerfile

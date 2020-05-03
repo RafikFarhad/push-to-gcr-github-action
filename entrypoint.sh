@@ -15,7 +15,9 @@ fi
 
 echo "Building image ..."
 
-if docker build -t $IMAGE_NAME . --file $INPUT_DOCKERFILE; then
+[ -z ${INPUT_DOCKERFILE+x} ] && FILE_ARG="" || FILE_ARG="--file $INPUT_DOCKERFILE"
+
+if docker build -t $IMAGE_NAME $INPUT_CONTEXT $FILE_ARG; then
     echo "Image built ..."
 else
     echo "Image building failed. Exiting..."
