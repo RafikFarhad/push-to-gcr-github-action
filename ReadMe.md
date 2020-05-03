@@ -21,8 +21,6 @@ The image name. This field is required.
 ### `image_tag`
 The tag for the image. Default: `latest`. To use the pushed `Tag Name` see the example.
 
-NB: The 
-
 ### `dockerfile`
 The image building Dockerfile. Default: `./Dockerfile`. 
 If context is changed, `Dockerfile` from context folder will be used.
