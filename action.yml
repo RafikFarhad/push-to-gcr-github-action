@@ -24,12 +24,16 @@ inputs:
     description: Tag name
     required: false
     default: latest
+  dockerfile:
+    description: Dockerfile that will build the image
+    required: false
+    default: ""
   context:
     description: Docker build context
     required: false
     default: .
-  dockerfile:
-    description: Dockerfile that will build the image
+  target:
+    description: Mutli-staged build target
     required: false
     default: ""
 runs:

@@ -2,7 +2,7 @@
 
 An action that build docker image and push to Google Cloud Registry.
 
-This action can be used to perform on every `push` or every `tag` creation.
+This action can be used to perform on every git `push` or every `tag` creation.
 
 ## Inputs
 
@@ -10,7 +10,7 @@ This action can be used to perform on every `push` or every `tag` creation.
 The service account key of google cloud. The service accout json file must be encoded in base64. This field is required.
 
 ### `registry`
-The registry where the image should be pushedThe name of the person to greet. Default `gcr.io`.
+The registry where the image should be pushed. Default `gcr.io`.
 
 ### `project_name`
 The project name. This field is required.
@@ -19,18 +19,26 @@ The project name. This field is required.
 The image name. This field is required.
 
 ### `image_tag`
-The tag for the image. Default: `latest`. To use the pushed `Tag Name` see the example.
+The tag for the image. Default: `latest`.
+
+To use the pushed `Tag Name` as image tag, see the [example](https://github.com/RafikFarhad/example/build_only_tags.yml).
 
 ### `dockerfile`
-The image building Dockerfile. Default: `./Dockerfile`. 
+The image building Dockerfile. 
 If context is changed, `Dockerfile` from context folder will be used.
+
+Default: `./Dockerfile`.
 
 ### `context`
 The docker build context. Default: `.`
 
+### `target`
+If you use multi-stage build and want to stop builing at a certain image, you can use this field. Default value is empty.
+
 ## Example usage
 Put desired yml section in the `.github/workflows/build.yml` file
-### [`To perform build & push on every push`](https://github.com/RafikFarhad/example/build.yml)
+### [`To perform build & push on every git push`](https://github.com/RafikFarhad/example/build.yml)
+
 ```
 name: Push to GCR Github Action
 on: [push]
@@ -38,7 +46,7 @@ jobs:
   build-and-push-to-gcr:
     runs-on: ubuntu-latest
     steps:
-      - uses: RafikFarhad/push-to-gcr-github-action@v1
+      - uses: RafikFarhad/push-to-gcr-github-action@v2
         with:
           gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
           registry: gcr.io
@@ -46,8 +54,8 @@ jobs:
           image_name: server-end
 
 ```
-
 ### [`To perform build & push only on tag publish`](https://github.com/RafikFarhad/example/build_only_tags.yml)
+
 ```
 name: Push to GCR Github Action
 on:
@@ -61,7 +69,7 @@ jobs:
       - name: Get the version
         id: get_tag_name
         run: echo ::set-output name=GIT_TAG_NAME::${GITHUB_REF/refs\/tags\//}
-      - uses: RafikFarhad/push-to-gcr-github-action@v1
+      - uses: RafikFarhad/push-to-gcr-github-action@v2
         with:
           gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
           registry: gcr.io

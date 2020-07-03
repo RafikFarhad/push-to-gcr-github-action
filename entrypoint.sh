@@ -1,35 +1,68 @@
-#!/bin/sh -l
+#!/bin/bash -
+#title          :entrypoint.sh
+#description    :This script build image with multiple option and push the image to Google Container Registry.
+#author         :RafikFarhad<rafikfarhad@gmail.com>
+#date           :20200703
+#version        :2.0.0
+#usage          :./entrypoint.sh
+#notes          :Required env values are: INPUT_GCLOUD_SERVICE_KEY,INPUT_REGISTRY,INPUT_PROJECT_NAME,INPUT_IMAGE_NAME
+#                Optional env values are: INPUT_IMAGE_TAG,INPUT_DOCKERFILE,INPUT_TARGET,INPUT_CONTEXT
+#bash_version   :5.0.17(1)-release
+###################################################
 
-IMAGE_NAME="$INPUT_REGISTRY/$INPUT_PROJECT_NAME/$INPUT_IMAGE_NAME:$INPUT_IMAGE_TAG"
+function split_csv() {
+    IFS=','
+    csv_data=$1
+    local -n global_list_array=$2
+    for i in $csv_data; do
+        global_list_array+=($i)
+    done
+    unset IFS
+}
 
-echo "Fully qualified image name: $IMAGE_NAME"
+ALL_IMAGE_TAG=()
 
 echo "Authenticating docker to gcloud ..."
-echo $INPUT_GCLOUD_SERVICE_KEY | python -m base64 -d > /tmp/key.json
+echo $INPUT_GCLOUD_SERVICE_KEY | python -m base64 -d >/tmp/key.json
+
 if cat /tmp/key.json | docker login -u _json_key --password-stdin https://$INPUT_REGISTRY; then
     echo "Logged in to google cloud ..."
 else
-    echo "Docker login failed. Exiting..."
+    echo "Docker login failed. Exiting ..."
     exit 1
 fi
 
-echo "Building image ..."
+split_csv $INPUT_IMAGE_TAG ALL_IMAGE_TAG
 
-[ -z $INPUT_DOCKERFILE ] && FILE_ARG="" || FILE_ARG="--file $INPUT_DOCKERFILE"
+for IMAGE_TAG in ${ALL_IMAGE_TAG[@]}; do
 
-echo "docker build -t $IMAGE_NAME $INPUT_CONTEXT $FILE_ARG"
+    IMAGE_NAME="$INPUT_REGISTRY/$INPUT_PROJECT_NAME/$INPUT_IMAGE_NAME:$IMAGE_TAG"
 
-if docker build -t $IMAGE_NAME $INPUT_CONTEXT $FILE_ARG; then
-    echo "Image built ..."
-else
-    echo "Image building failed. Exiting..."
-    exit 1
-fi
+    echo "Fully qualified image name: $IMAGE_NAME"
 
-echo "Pushing image ..."
-if ! docker push $IMAGE_NAME; then
-    echo "Pushing failed. Exiting..."
-    exit 1
-else
-    echo "Process complete."
-fi
+    echo "Building image ..."
+
+    [ -z $INPUT_TARGET ] && TARGET_ARG="" || TARGET_ARG="--target $INPUT_TARGET"
+
+    [ -z $INPUT_DOCKERFILE ] && FILE_ARG="" || FILE_ARG="--file $INPUT_DOCKERFILE"
+
+    echo "docker build $TARGET_ARG -t $IMAGE_NAME $INPUT_CONTEXT $FILE_ARG"
+
+    if docker build $TARGET_ARG -t $IMAGE_NAME $INPUT_CONTEXT $FILE_ARG; then
+        echo "Image built ..."
+    else
+        echo "Image building failed. Exiting ..."
+        exit 1
+    fi
+
+    echo "Pushing image $IMAGE_NAME ..."
+
+    if ! docker push $IMAGE_NAME; then
+        echo "Pushing failed. Exiting ..."
+        exit 1
+    else
+        echo "Image pushed."
+    fi
+done
+
+echo "Process complete."
