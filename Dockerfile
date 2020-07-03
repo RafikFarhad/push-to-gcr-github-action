@@ -4,7 +4,7 @@ LABEL maintainer="RafikFarhad<rafikfarhad@gmail.com>"
 
 RUN apk update && \
     apk upgrade && \
-    apk add --no-cache git curl python
+    apk add --no-cache git curl python bash
 
 #  Downloading gcloud package
 RUN curl https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz > /tmp/google-cloud-sdk.tar.gz

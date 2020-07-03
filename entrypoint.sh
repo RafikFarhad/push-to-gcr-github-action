@@ -1,4 +1,4 @@
-#!/bin/sh -
+#!/bin/bash -
 #title          :entrypoint.sh
 #description    :This script build image with multiple option and push the image to Google Container Registry.
 #author         :RafikFarhad<rafikfarhad@gmail.com>
