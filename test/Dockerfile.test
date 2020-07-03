@@ -1,0 +1,12 @@
+FROM gcc:10.1.0 AS build
+
+WORKDIR /root
+COPY HelloWorld.c .
+RUN gcc -o executable HelloWorld.c 
+
+
+FROM gcc:10.1.0 AS prod
+WORKDIR /root
+COPY --from=build /root/executable ./executable
+
+ENTRYPOINT ["./executable"]
