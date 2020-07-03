@@ -34,26 +34,33 @@ fi
 
 split_csv $INPUT_IMAGE_TAG ALL_IMAGE_TAG
 
+
+TEMP_IMAGE_NAME="$INPUT_IMAGE_NAME:temporary"
+
+echo "Building image ..."
+
+[ -z $INPUT_TARGET ] && TARGET_ARG="" || TARGET_ARG="--target $INPUT_TARGET"
+
+[ -z $INPUT_DOCKERFILE ] && FILE_ARG="" || FILE_ARG="--file $INPUT_DOCKERFILE"
+
+echo "docker build $TARGET_ARG -t $TEMP_IMAGE_NAME $INPUT_CONTEXT $FILE_ARG"
+
+if docker build $TARGET_ARG -t $TEMP_IMAGE_NAME $INPUT_CONTEXT $FILE_ARG; then
+    echo "Image built ..."
+else
+    echo "Image building failed. Exiting ..."
+    exit 1
+fi
+
 for IMAGE_TAG in ${ALL_IMAGE_TAG[@]}; do
 
     IMAGE_NAME="$INPUT_REGISTRY/$INPUT_PROJECT_NAME/$INPUT_IMAGE_NAME:$IMAGE_TAG"
 
     echo "Fully qualified image name: $IMAGE_NAME"
 
-    echo "Building image ..."
+    echo "Creating docker tag ..."
 
-    [ -z $INPUT_TARGET ] && TARGET_ARG="" || TARGET_ARG="--target $INPUT_TARGET"
-
-    [ -z $INPUT_DOCKERFILE ] && FILE_ARG="" || FILE_ARG="--file $INPUT_DOCKERFILE"
-
-    echo "docker build $TARGET_ARG -t $IMAGE_NAME $INPUT_CONTEXT $FILE_ARG"
-
-    if docker build $TARGET_ARG -t $IMAGE_NAME $INPUT_CONTEXT $FILE_ARG; then
-        echo "Image built ..."
-    else
-        echo "Image building failed. Exiting ..."
-        exit 1
-    fi
+    docker tag $TEMP_IMAGE_NAME $IMAGE_NAME
 
     echo "Pushing image $IMAGE_NAME ..."
 
