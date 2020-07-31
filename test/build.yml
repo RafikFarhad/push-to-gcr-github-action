@@ -8,7 +8,7 @@ jobs:
         with:
           gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
           registry: gcr.io
-          project_name: source-code-oj
+          project_id: source-code-oj
           image_name: push-to-gcr-action-test
           image_tag: v2,latest
           dockerfile: ./test/Dockerfile.test

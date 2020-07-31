@@ -5,7 +5,7 @@
 #date           :20200703
 #version        :2.0.0
 #usage          :./entrypoint.sh
-#notes          :Required env values are: INPUT_GCLOUD_SERVICE_KEY,INPUT_REGISTRY,INPUT_PROJECT_NAME,INPUT_IMAGE_NAME
+#notes          :Required env values are: INPUT_GCLOUD_SERVICE_KEY,INPUT_REGISTRY,INPUT_PROJECT_ID,INPUT_IMAGE_NAME
 #                Optional env values are: INPUT_IMAGE_TAG,INPUT_DOCKERFILE,INPUT_TARGET,INPUT_CONTEXT
 #bash_version   :5.0.17(1)-release
 ###################################################
@@ -54,7 +54,7 @@ fi
 
 for IMAGE_TAG in ${ALL_IMAGE_TAG[@]}; do
 
-    IMAGE_NAME="$INPUT_REGISTRY/$INPUT_PROJECT_NAME/$INPUT_IMAGE_NAME:$IMAGE_TAG"
+    IMAGE_NAME="$INPUT_REGISTRY/$INPUT_PROJECT_ID/$INPUT_IMAGE_NAME:$IMAGE_TAG"
 
     echo "Fully qualified image name: $IMAGE_NAME"
 

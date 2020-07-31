@@ -12,7 +12,7 @@ The service account key of google cloud. The service accout json file must be en
 ### `registry`
 The registry where the image should be pushed. Default `gcr.io`.
 
-### `project_name`
+### `project_id`
 The project name. This field is required.
 
 ### `image_name`
@@ -52,7 +52,7 @@ jobs:
         with:
           gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
           registry: gcr.io
-          project_name: my-awesome-project
+          project_id: my-awesome-project
           image_name: server-end
 
 ```
@@ -75,7 +75,7 @@ jobs:
         with:
           gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
           registry: gcr.io
-          project_name: my-awesome-project
+          project_id: my-awesome-project
           image_name: server-end
           image_tag: ${{ steps.get_tag_name.outputs.GIT_TAG_NAME}}
           dockerfile: ./build/Dockerfile
