@@ -13,7 +13,7 @@ The service account key of google cloud. The service accout json file must be en
 The registry where the image should be pushed. Default `gcr.io`.
 
 ### `project_id`
-The project name. This field is required.
+The project id. This field is required.
 
 ### `image_name`
 The image name. This field is required.
@@ -48,7 +48,7 @@ jobs:
   build-and-push-to-gcr:
     runs-on: ubuntu-latest
     steps:
-      - uses: RafikFarhad/push-to-gcr-github-action@v2
+      - uses: RafikFarhad/push-to-gcr-github-action@v3
         with:
           gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
           registry: gcr.io
@@ -71,7 +71,7 @@ jobs:
       - name: Get the version
         id: get_tag_name
         run: echo ::set-output name=GIT_TAG_NAME::${GITHUB_REF/refs\/tags\//}
-      - uses: RafikFarhad/push-to-gcr-github-action@v2
+      - uses: RafikFarhad/push-to-gcr-github-action@v3
         with:
           gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
           registry: gcr.io
