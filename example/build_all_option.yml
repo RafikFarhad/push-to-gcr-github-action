@@ -8,7 +8,7 @@ jobs:
         with:
           gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
           registry: gcr.io
-          project_name: my-awesome-project
+          project_id: my-awesome-project
           image_name: server-end
           image_tag: latest,v1
           dockerfile: ./docker/Dockerfile.prod

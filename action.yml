@@ -12,8 +12,8 @@ inputs:
     description: The registry where the image should be pushed
     required: false
     default: gcr.io
-  project_name:
-    description: The project name
+  project_id:
+    description: The project id
     required: true
     default: my-awesome-project
   image_name:
