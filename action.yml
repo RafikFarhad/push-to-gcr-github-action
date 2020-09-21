@@ -36,6 +36,9 @@ inputs:
     description: Mutli-staged build target
     required: false
     default: ""
+  build_args:
+    description: "Pass a list of env vars as build-args for docker-build, separated by commas"
+    required: false
 runs:
   using: docker
   image: Dockerfile
