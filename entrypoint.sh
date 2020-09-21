@@ -43,7 +43,14 @@ echo "Building image ..."
 
 [ -z $INPUT_DOCKERFILE ] && FILE_ARG="" || FILE_ARG="--file $INPUT_DOCKERFILE"
 
-echo "docker build $TARGET_ARG -t $TEMP_IMAGE_NAME $INPUT_CONTEXT $FILE_ARG"
+BUILD_PARAMS="--build-arg commit=$SHA"
+if [ ! -z "$INPUT_BUILD_ARGS" ]; then
+  for ARG in $(echo "$INPUT_BUILD_ARGS" | tr ',' '\n'); do
+    BUILD_PARAMS="$BUILD_PARAMS --build-arg ${ARG}"
+  done
+fi
+
+echo "docker build $BUILD_PARAMS $TARGET_ARG -t $TEMP_IMAGE_NAME $INPUT_CONTEXT $FILE_ARG"
 
 if docker build $TARGET_ARG -t $TEMP_IMAGE_NAME $INPUT_CONTEXT $FILE_ARG; then
     echo "Image built ..."
