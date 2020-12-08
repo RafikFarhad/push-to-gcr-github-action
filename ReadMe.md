@@ -19,7 +19,7 @@ The project id. This field is required.
 The image name. This field is required.
 
 ### `image_tag`
-The tag for the image. To create multiple tag of the same image, provide comma (`,`) separeted tag name (eg:`v2.1,v2,latest`).
+The tag for the image. To create multiple tag of the same image, provide comma (`,`) separeted tag name (e.g. `v2.1,v2,latest`).
 
 Default: `latest`.
 
