@@ -1,4 +1,4 @@
-# Push to GCR Github Action
+# Push to GCR GitHub Action
 
 An action that build docker image and push to Google Cloud Registry.
 
@@ -42,7 +42,7 @@ Put desired yml section in the `.github/workflows/build.yml` file
 ### [`To perform build & push on every git push`](https://github.com/RafikFarhad/example/build.yml)
 
 ```
-name: Push to GCR Github Action
+name: Push to GCR GitHub Action
 on: [push]
 jobs:
   build-and-push-to-gcr:
@@ -59,7 +59,7 @@ jobs:
 ### [`To perform build & push only on tag publish`](https://github.com/RafikFarhad/example/build_only_tags.yml)
 
 ```
-name: Push to GCR Github Action
+name: Push to GCR GitHub Action
 on:
   push:
     tags:

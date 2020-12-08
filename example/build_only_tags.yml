@@ -1,4 +1,4 @@
-name: Push to GCR Github Action
+name: Push to GCR GitHub Action
 on:
   push:
     tags:

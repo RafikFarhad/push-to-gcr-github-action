@@ -1,4 +1,4 @@
-name: Push to GCR Github Action
+name: Push to GCR GitHub Action
 author: Rafik Farhad <rafikfarhad@gmail.com>
 description: An action that build docker image and push to Google Cloud Registry
 branding:
