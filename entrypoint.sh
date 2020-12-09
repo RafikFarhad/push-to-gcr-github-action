@@ -23,7 +23,10 @@ function split_csv() {
 ALL_IMAGE_TAG=()
 
 echo "Authenticating docker to gcloud ..."
-echo $INPUT_GCLOUD_SERVICE_KEY | python -m base64 -d >/tmp/key.json
+if ! echo $INPUT_GCLOUD_SERVICE_KEY | python -m base64 -d >/tmp/key.json 2>/dev/null; then
+    echo "Failed to decode gcloud_service_key -- did you forget to encode it using 'python -m base64 -e < yourkey.json'?"
+    exit 1
+fi
 
 if cat /tmp/key.json | docker login -u _json_key --password-stdin https://$INPUT_REGISTRY; then
     echo "Logged in to google cloud ..."
