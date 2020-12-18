@@ -23,7 +23,7 @@ inputs:
   image_tag:
     description: Tag name
     required: false
-    default: foobar
+    default: latest
   dockerfile:
     description: Dockerfile that will build the image
     required: false
