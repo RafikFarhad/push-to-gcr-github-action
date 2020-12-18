@@ -11,7 +11,7 @@ inputs:
   registry:
     description: The registry where the image should be pushed
     required: false
-    default: gcr.io
+    default: 'gcr.io'
   project_id:
     description: The project id
     required: true
@@ -31,11 +31,14 @@ inputs:
   context:
     description: Docker build context
     required: false
-    default: .
+    default: '.'
   target:
     description: Mutli-staged build target
     required: false
     default: ""
+  build_args:
+    description: "Pass a list of env vars as build-args for docker-build, separated by commas"
+    required: false
 runs:
   using: docker
   image: Dockerfile

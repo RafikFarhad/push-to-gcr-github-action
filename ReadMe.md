@@ -37,6 +37,9 @@ The docker build context. Default: `.`
 ### `target`
 If you use multi-stage build and want to stop builing at a certain image, you can use this field. Default value is empty.
 
+### `build_args`
+Pass a list of env vars as build-args for docker-build, separated by commas. ie: `HOST=db.default.svc.cluster.local:5432,USERNAME=db_user`
+
 ## Example usage
 Put desired yml section in the `.github/workflows/build.yml` file
 ### [`To perform build & push on every git push`](https://github.com/RafikFarhad/example/build.yml)
