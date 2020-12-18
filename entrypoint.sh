@@ -19,7 +19,8 @@ function split_csv() {
     done
     unset IFS
 }
-
+echo "input_context $INPUT_CONTEXT"
+env | grep INPUT
 ALL_IMAGE_TAG=()
 
 echo "Authenticating docker to gcloud ..."
@@ -43,16 +44,17 @@ echo "Building image ..."
 
 [ -z $INPUT_DOCKERFILE ] && FILE_ARG="" || FILE_ARG="--file $INPUT_DOCKERFILE"
 
-BUILD_PARAMS="--build-arg commit=$SHA"
+
 if [ ! -z "$INPUT_BUILD_ARGS" ]; then
   for ARG in $(echo "$INPUT_BUILD_ARGS" | tr ',' '\n'); do
     BUILD_PARAMS="$BUILD_PARAMS --build-arg ${ARG}"
   done
 fi
 
-echo "docker build $BUILD_PARAMS $TARGET_ARG -t $TEMP_IMAGE_NAME $INPUT_CONTEXT $FILE_ARG"
+echo "docker build $BUILD_PARAMS $TARGET_ARG -t $TEMP_IMAGE_NAME $FILE_ARG $INPUT_CONTEXT"
 
-if docker build $TARGET_ARG -t $TEMP_IMAGE_NAME $INPUT_CONTEXT $FILE_ARG; then
+
+if docker build $TARGET_ARG -t $TEMP_IMAGE_NAME $FILE_ARG $INPUT_CONTEXT; then
     echo "Image built ..."
 else
     echo "Image building failed. Exiting ..."

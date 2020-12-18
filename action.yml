@@ -11,7 +11,7 @@ inputs:
   registry:
     description: The registry where the image should be pushed
     required: false
-    default: gcr.io
+    default: 'gcr.io'
   project_id:
     description: The project id
     required: true
@@ -23,7 +23,7 @@ inputs:
   image_tag:
     description: Tag name
     required: false
-    default: latest
+    default: foobar
   dockerfile:
     description: Dockerfile that will build the image
     required: false
@@ -31,7 +31,7 @@ inputs:
   context:
     description: Docker build context
     required: false
-    default: .
+    default: '.'
   target:
     description: Mutli-staged build target
     required: false
