@@ -51,7 +51,7 @@ jobs:
   build-and-push-to-gcr:
     runs-on: ubuntu-latest
     steps:
-      - uses: RafikFarhad/push-to-gcr-github-action@v3
+      - uses: RafikFarhad/push-to-gcr-github-action@v3.0.1
         with:
           gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
           registry: gcr.io
@@ -74,7 +74,7 @@ jobs:
       - name: Get the version
         id: get_tag_name
         run: echo ::set-output name=GIT_TAG_NAME::${GITHUB_REF/refs\/tags\//}
-      - uses: RafikFarhad/push-to-gcr-github-action@v3
+      - uses: RafikFarhad/push-to-gcr-github-action@v3.0.1
         with:
           gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
           registry: gcr.io
