@@ -19,8 +19,7 @@ function split_csv() {
     done
     unset IFS
 }
-echo "input_context $INPUT_CONTEXT"
-env | grep INPUT
+
 ALL_IMAGE_TAG=()
 
 echo "Authenticating docker to gcloud ..."
