@@ -3,10 +3,10 @@
 #description    :This script build image with multiple option and push the image to Google Container Registry.
 #author         :RafikFarhad<rafikfarhad@gmail.com>
 #date           :20200703
-#version        :2.0.0
+#version        :2.0.1
 #usage          :./entrypoint.sh
 #notes          :Required env values are: INPUT_GCLOUD_SERVICE_KEY,INPUT_REGISTRY,INPUT_PROJECT_ID,INPUT_IMAGE_NAME
-#                Optional env values are: INPUT_IMAGE_TAG,INPUT_DOCKERFILE,INPUT_TARGET,INPUT_CONTEXT
+#                Optional env values are: INPUT_IMAGE_TAG,INPUT_DOCKERFILE,INPUT_TARGET,INPUT_CONTEXT,INPUT_BUILD_ARGS
 #bash_version   :5.0.17(1)-release
 ###################################################
 
@@ -56,7 +56,7 @@ fi
 echo "docker build $BUILD_PARAMS $TARGET_ARG -t $TEMP_IMAGE_NAME $FILE_ARG $INPUT_CONTEXT"
 
 
-if docker build $TARGET_ARG -t $TEMP_IMAGE_NAME $FILE_ARG $INPUT_CONTEXT; then
+if docker build $BUILD_PARAMS $TARGET_ARG -t $TEMP_IMAGE_NAME $FILE_ARG $INPUT_CONTEXT; then
     echo "Image built ..."
 else
     echo "Image building failed. Exiting ..."
