@@ -42,7 +42,7 @@ Pass a list of env vars as build-args for docker-build, separated by commas. ie:
 
 ## Example usage
 Put desired yml section in the `.github/workflows/build.yml` file
-### [`To perform build & push on every git push`](https://github.com/RafikFarhad/example/build.yml)
+### `To perform build & push on every git push`
 
 ```
 name: Push to GCR GitHub Action
@@ -51,6 +51,7 @@ jobs:
   build-and-push-to-gcr:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - uses: RafikFarhad/push-to-gcr-github-action@v3.0.2
         with:
           gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
@@ -59,7 +60,7 @@ jobs:
           image_name: server-end
 
 ```
-### [`To perform build & push only on tag publish`](https://github.com/RafikFarhad/example/build_only_tags.yml)
+### `To perform build & push only on tag publish`
 
 ```
 name: Push to GCR GitHub Action
@@ -71,6 +72,7 @@ jobs:
   build-and-push-to-gcr:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Get the version
         id: get_tag_name
         run: echo ::set-output name=GIT_TAG_NAME::${GITHUB_REF/refs\/tags\//}
