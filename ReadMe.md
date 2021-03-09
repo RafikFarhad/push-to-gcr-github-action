@@ -40,6 +40,16 @@ If you use multi-stage build and want to stop builing at a certain image, you ca
 ### `build_args`
 Pass a list of env vars as build-args for docker-build, separated by commas. ie: `HOST=db.default.svc.cluster.local:5432,USERNAME=db_user`
 
+## Permissions
+The service key you provided must have the `Storage Admin` permission to push the image to GCR.
+It is possible to use a lower access level `Storage Object Admin`, but it will work only for already created registry. 
+
+[Reference 1](https://cloud.google.com/container-registry/docs/access-control)
+
+[Reference 2](https://stackoverflow.com/a/39750467/6189461)
+
+To create service key/account visit [here](https://console.cloud.google.com/iam-admin/serviceaccounts)
+
 ## Example usage
 Put desired yml section in the `.github/workflows/build.yml` file
 ### `To perform build & push on every git push`
