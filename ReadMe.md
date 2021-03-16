@@ -42,7 +42,7 @@ Pass a list of env vars as build-args for docker-build, separated by commas. ie:
 
 ## Permissions
 The service key you provided must have the `Storage Admin` permission to push the image to GCR.
-It is possible to use a lower access level `Storage Object Admin`, but it will work only for already created registry. 
+It is possible to use a lower access level `Storage Object Admin`, but it will work only for already created registry. You must also add the `Storage Legacy Bucket Reader` permission to the `artifacts.<project id>.appspot.com` bucket for the given service account.
 
 [Reference 1](https://cloud.google.com/container-registry/docs/access-control)
 
