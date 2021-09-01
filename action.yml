@@ -39,6 +39,10 @@ inputs:
   build_args:
     description: "Pass a list of env vars as build-args for docker-build, separated by commas"
     required: false
+  push_only:
+    description: Skip the build step and just push an image
+    required: false
+    default: false
 runs:
   using: docker
   image: Dockerfile

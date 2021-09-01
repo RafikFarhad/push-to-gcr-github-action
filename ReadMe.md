@@ -40,6 +40,9 @@ If you use multi-stage build and want to stop builing at a certain image, you ca
 ### `build_args`
 Pass a list of env vars as build-args for docker-build, separated by commas. ie: `HOST=db.default.svc.cluster.local:5432,USERNAME=db_user`
 
+### `push_only`
+If you want to skip the build step and just push the image, use this option. Default for this is `false`.
+
 ## Permissions
 The service key you provided must have the `Storage Admin` permission to push the image to GCR.
 It is possible to use a lower access level `Storage Object Admin`, but it will work only for already created registry. You must also add the `Storage Legacy Bucket Reader` permission to the `artifacts.<project id>.appspot.com` bucket for the given service account.
@@ -94,4 +97,23 @@ jobs:
           image_name: server-end
           image_tag: ${{ steps.get_tag_name.outputs.GIT_TAG_NAME}}
           dockerfile: ./build/Dockerfile
+```
+### `To just push an image on every git push`
+
+```
+name: Push image to GCR GitHub Action
+on: [push]
+jobs:
+  just-push-to-gcr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: RafikFarhad/push-to-gcr-github-action@v3.0.2
+        with:
+          gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
+          registry: gcr.io
+          project_id: my-awesome-project
+          image_name: server-end
+          push_only: true
+
 ```
