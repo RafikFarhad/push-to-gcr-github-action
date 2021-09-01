@@ -37,32 +37,31 @@ fi
 
 split_csv $INPUT_IMAGE_TAG ALL_IMAGE_TAG
 
-
 TEMP_IMAGE_NAME="$INPUT_IMAGE_NAME:temporary"
 
-if ! $PUSH_ONLY
-  echo "Building image ..."
-  [ -z $INPUT_TARGET ] && TARGET_ARG="" || TARGET_ARG="--target $INPUT_TARGET"
-  [ -z $INPUT_DOCKERFILE ] && FILE_ARG="" || FILE_ARG="--file $INPUT_DOCKERFILE"
-
-  if [ ! -z "$INPUT_BUILD_ARGS" ]; then
-    for ARG in $(echo "$INPUT_BUILD_ARGS" | tr ',' '\n'); do
-      BUILD_PARAMS="$BUILD_PARAMS --build-arg ${ARG}"
-    done
-  fi
-
-  echo "docker build $BUILD_PARAMS $TARGET_ARG -t $TEMP_IMAGE_NAME $FILE_ARG $INPUT_CONTEXT"
-
-  if docker build $BUILD_PARAMS $TARGET_ARG -t $TEMP_IMAGE_NAME $FILE_ARG $INPUT_CONTEXT; then
-      echo "Image built ..."
-  else
-      echo "Image building failed. Exiting ..."
-      exit 1
-  fi
+if [ "$PUSH_ONLY" = true ]; then
+    echo "Skipping image build ..."
 else
-  echo "Skipping image build ..."
+    echo "Building image ..."
+    [ -z $INPUT_TARGET ] && TARGET_ARG="" || TARGET_ARG="--target $INPUT_TARGET"
+    [ -z $INPUT_DOCKERFILE ] && FILE_ARG="" || FILE_ARG="--file $INPUT_DOCKERFILE"
+
+    if [ ! -z "$INPUT_BUILD_ARGS" ]; then
+        for ARG in $(echo "$INPUT_BUILD_ARGS" | tr ',' '\n'); do
+            BUILD_PARAMS="$BUILD_PARAMS --build-arg ${ARG}"
+        done
+    fi
+
+    echo "docker build $BUILD_PARAMS $TARGET_ARG -t $TEMP_IMAGE_NAME $FILE_ARG $INPUT_CONTEXT"
+
+    if docker build $BUILD_PARAMS $TARGET_ARG -t $TEMP_IMAGE_NAME $FILE_ARG $INPUT_CONTEXT; then
+        echo "Image built ..."
+    else
+        echo "Image building failed. Exiting ..."
+        exit 1
+    fi
 fi
-  
+
 for IMAGE_TAG in ${ALL_IMAGE_TAG[@]}; do
 
     IMAGE_NAME="$INPUT_REGISTRY/$INPUT_PROJECT_ID/$INPUT_IMAGE_NAME:$IMAGE_TAG"
