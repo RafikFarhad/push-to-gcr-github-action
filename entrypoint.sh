@@ -42,11 +42,8 @@ TEMP_IMAGE_NAME="$INPUT_IMAGE_NAME:temporary"
 
 if ! $PUSH_ONLY
   echo "Building image ..."
-
   [ -z $INPUT_TARGET ] && TARGET_ARG="" || TARGET_ARG="--target $INPUT_TARGET"
-
   [ -z $INPUT_DOCKERFILE ] && FILE_ARG="" || FILE_ARG="--file $INPUT_DOCKERFILE"
-
 
   if [ ! -z "$INPUT_BUILD_ARGS" ]; then
     for ARG in $(echo "$INPUT_BUILD_ARGS" | tr ',' '\n'); do
@@ -56,7 +53,6 @@ if ! $PUSH_ONLY
 
   echo "docker build $BUILD_PARAMS $TARGET_ARG -t $TEMP_IMAGE_NAME $FILE_ARG $INPUT_CONTEXT"
 
-
   if docker build $BUILD_PARAMS $TARGET_ARG -t $TEMP_IMAGE_NAME $FILE_ARG $INPUT_CONTEXT; then
       echo "Image built ..."
   else
@@ -64,7 +60,7 @@ if ! $PUSH_ONLY
       exit 1
   fi
 else
-  echo "Skipping image build and just pushing image ..."
+  echo "Skipping image build ..."
 fi
   
 for IMAGE_TAG in ${ALL_IMAGE_TAG[@]}; do
