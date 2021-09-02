@@ -39,7 +39,7 @@ split_csv $INPUT_IMAGE_TAG ALL_IMAGE_TAG
 
 TEMP_IMAGE_NAME="$INPUT_IMAGE_NAME:temporary"
 
-if [ "$PUSH_ONLY" = true ]; then
+if [ "$INPUT_PUSH_ONLY" = true ]; then
     echo "Skipping image build ..."
 else
     echo "Building image ..."
