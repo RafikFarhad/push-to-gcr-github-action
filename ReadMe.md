@@ -54,9 +54,26 @@ It is possible to use a lower access level `Storage Object Admin`, but it will w
 To create service key/account visit [here](https://console.cloud.google.com/iam-admin/serviceaccounts)
 
 ## Example usage
-
-[Different Variants] (https://github.com/RafikFarhad/push-to-gcr-github-action/tree/master/example)
-[Workflow] (https://github.com/RafikFarhad/push-to-gcr-github-action/tree/master/.github/workflows)
+```yaml
+name: Push to GCR GitHub Action
+on: [push]
+jobs:
+  build-and-push-to-gcr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: RafikFarhad/push-to-gcr-github-action@v4.1
+        with:
+          gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }} # can be base64 encoded or plain text
+          registry: gcr.io
+          project_id: my-awesome-project
+          image_name: backend
+          image_tag: latest,v1
+          dockerfile: ./docker/Dockerfile.prod
+          context: ./docker
+```
+[More Example] (https://github.com/RafikFarhad/push-to-gcr-github-action/tree/master/example)
+[Workflow Example] (https://github.com/RafikFarhad/push-to-gcr-github-action/tree/master/.github/workflows)
 
 ## Contribution
 - Fork
