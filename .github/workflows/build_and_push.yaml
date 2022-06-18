@@ -17,10 +17,13 @@ jobs:
           registry: gcr.io
           project_id: pro-chesta
           image_name: hello-world-by-push-to-gcr
-          image_tag: test,${{ github.sha }}
+          image_tag: test-${{ github.sha }},${{ github.sha }}
           dockerfile: ./test/Dockerfile.test
           context: ./test
           target: build
       - uses: azure/container-scan@v0
         with:
-            image-name: "hello-world-by-push-to-gcr:test"
+            image-name: "gcr.io/pro-chesta/hello-world-by-push-to-gcr:test-${{ github.sha }}"
+      - uses: azure/container-scan@v0
+        with:
+            image-name: "gcr.io/pro-chesta/hello-world-by-push-to-gcr:${{ github.sha }}"
