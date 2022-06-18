@@ -10,22 +10,18 @@
 #bash_version   :5.0.17(1)-release
 ###################################################
 
-function split_csv() {
-    IFS=','
-    csv_data=$1
-    local -n global_list_array=$2
-    for i in $csv_data; do
-        global_list_array+=($i)
-    done
-    unset IFS
-}
-
 ALL_IMAGE_TAG=()
 
 echo "Authenticating docker to gcloud ..."
 if ! echo $INPUT_GCLOUD_SERVICE_KEY | python -m base64 -d >/tmp/key.json 2>/dev/null; then
-    echo "Failed to decode gcloud_service_key -- did you forget to encode it using 'python -m base64 -e < yourkey.json'?"
-    exit 1
+    if ! echo $INPUT_GCLOUD_SERVICE_KEY >/tmp/key.json 2>/dev/null; then
+        echo "Failed to get gcloud_service_key. It could be plain text or base64 encoded service account JSON file"
+        exit 1
+    else
+        echo "This action is unable to decode INPUT_GCLOUD_SERVICE_KEY as base64. It assumes INPUT_GCLOUD_SERVICE_KEY as plain text."
+    fi
+else
+    echo "Successfully decoded from base64"
 fi
 
 if cat /tmp/key.json | docker login -u _json_key --password-stdin https://$INPUT_REGISTRY; then
@@ -35,7 +31,14 @@ else
     exit 1
 fi
 
-split_csv $INPUT_IMAGE_TAG ALL_IMAGE_TAG
+# split -> trim -> compact -> uniq -> bash array
+ALL_IMAGE_TAG=($(python -c "print(' '.join(list(set([v for v in [v.strip() for v in '$INPUT_IMAGE_TAG'.split(',')] if v]))))"))
+
+# default to 'latest' when $ALL_IMAGE_TAG is empty
+if [ ${#ALL_IMAGE_TAG[@]} -eq 0 ] ; then
+    echo "INPUT_IMAGE_TAG tag is not persable. Using latest by default"
+    ALL_IMAGE_TAG=(latest)
+fi
 
 TEMP_IMAGE_NAME="$INPUT_IMAGE_NAME:temporary"
 
