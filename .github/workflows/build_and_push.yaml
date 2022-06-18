@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: .
+      - uses: "."
         with:
           gcloud_service_key: ${{ secrets.B64_GCLOUD_SERVICE_ACCOUNT_JSON }}
           registry: gcr.io
