@@ -8,6 +8,7 @@ on:
       - master
 jobs:
   build-and-push-to-gcr:
+    name: "Bulding and pushing images"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -23,6 +24,7 @@ jobs:
           context: ./test
           target: build
   test-image:
+    name: "Testing the image"
     needs: [build-and-push-to-gcr]
     runs-on: ubuntu-latest
     container: 
@@ -34,6 +36,7 @@ jobs:
       - name: "Testing the image"
         run: exit $([ "$(/root/executable)" = "Hello World from Push To GCR github action" ])
   cleanup:
+    name: "Cleaning up images"
     needs: [build-and-push-to-gcr, test-image]
     if: always()
     continue-on-error: true
@@ -44,4 +47,4 @@ jobs:
         with:
           credentials_json: '${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}'
       - name: "Delete images"
-        run: docker image rm gcr.io/pro-chesta/hello-world-by-push-to-gcr:${{ github.sha }} gcr.io/pro-chesta/hello-world-by-push-to-gcr:test-${{ github.sha }}
+        run: gcloud container images delete gcr.io/pro-chesta/hello-world-by-push-to-gcr:${{ github.sha }} --force-delete-tags --quiet
