@@ -33,3 +33,15 @@ jobs:
     steps:
       - name: "Testing the image"
         run: exit [ "$(/root/executable)" = "Hello World from Push To GCR github action" ]
+  cleanup:
+    needs: [build-and-push-to-gcr, test-image]
+    if: always()
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v0'
+        with:
+          credentials_json: '${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}'
+      - name: "Delete images"
+        run: docker rm gcr.io/pro-chesta/hello-world-by-push-to-gcr:${{ github.sha }} gcr.io/pro-chesta/hello-world-by-push-to-gcr:test-${{ github.sha }}
