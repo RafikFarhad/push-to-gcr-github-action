@@ -12,7 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: ls
-      - uses: ./action.yaml
+      - run: pwd
+      - uses: action.yaml
         with:
           gcloud_service_key: ${{ secrets.B64_GCLOUD_SERVICE_ACCOUNT_JSON }}
           registry: gcr.io
