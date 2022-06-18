@@ -19,7 +19,7 @@ jobs:
           registry: gcr.io
           project_id: pro-chesta
           image_name: hello-world-by-push-to-gcr
-          image_tag: test-${{ github.sha }},${{ github.sha }}
+          image_tag: test-${{ github.sha }}, ${{ github.sha }}
           dockerfile: ./test/Dockerfile.test
           context: ./test
           target: build
