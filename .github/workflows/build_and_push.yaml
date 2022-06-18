@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - run: ls
       - uses: ./action.yaml
         with:
           gcloud_service_key: ${{ secrets.B64_GCLOUD_SERVICE_ACCOUNT_JSON }}
