@@ -21,9 +21,5 @@ jobs:
           dockerfile: ./test/Dockerfile.test
           context: ./test
           target: build
-      - uses: azure/container-scan@v0
-        with:
-            image-name: "gcr.io/pro-chesta/hello-world-by-push-to-gcr:test-${{ github.sha }}"
-      - uses: azure/container-scan@v0
-        with:
-            image-name: "gcr.io/pro-chesta/hello-world-by-push-to-gcr:${{ github.sha }}"
+      - uses: "gcr.io/pro-chesta/hello-world-by-push-to-gcr:${{ github.sha }}"
+        run: /root/executable
