@@ -32,7 +32,7 @@ else
 fi
 
 # split -> trim -> compact -> uniq -> bash array
-ALL_IMAGE_TAG=($(python3 -c "print(' '.join(list(set([v for v in [v.strip() for v in '$INPUT_IMAGE_TAG'.split(',')] if v]))))"))
+ALL_IMAGE_TAG=($(python -c "print(' '.join(list(set([v for v in [v.strip() for v in '$INPUT_IMAGE_TAG'.split(',')] if v]))))"))
 
 # default to 'latest' when $ALL_IMAGE_TAG is empty
 if [ ${#ALL_IMAGE_TAG[@]} -eq 0 ] ; then
