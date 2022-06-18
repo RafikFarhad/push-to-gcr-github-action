@@ -7,7 +7,7 @@ This action can be used to perform on every git `push` or every `tag` creation.
 ## Inputs
 
 ### `gcloud_service_key`
-The service account key of google cloud. The service accout json file must be encoded in base64. This field is required.
+The service account key of google cloud. The json file can be encoded in base64 or in plain text. This field is required.
 
 ### `registry`
 The registry where the image should be pushed. Default `gcr.io`.
@@ -54,66 +54,6 @@ It is possible to use a lower access level `Storage Object Admin`, but it will w
 To create service key/account visit [here](https://console.cloud.google.com/iam-admin/serviceaccounts)
 
 ## Example usage
-Put desired yml section in the `.github/workflows/build.yml` file
-### `To perform build & push on every git push`
 
-```
-name: Push to GCR GitHub Action
-on: [push]
-jobs:
-  build-and-push-to-gcr:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: RafikFarhad/push-to-gcr-github-action@v4
-        with:
-          gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
-          registry: gcr.io
-          project_id: my-awesome-project
-          image_name: server-end
-
-```
-### `To perform build & push only on tag publish`
-
-```
-name: Push to GCR GitHub Action
-on:
-  push:
-    tags:
-    - '*'
-jobs:
-  build-and-push-to-gcr:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Get the version
-        id: get_tag_name
-        run: echo ::set-output name=GIT_TAG_NAME::${GITHUB_REF/refs\/tags\//}
-      - uses: RafikFarhad/push-to-gcr-github-action@v4
-        with:
-          gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
-          registry: gcr.io
-          project_id: my-awesome-project
-          image_name: server-end
-          image_tag: ${{ steps.get_tag_name.outputs.GIT_TAG_NAME}}
-          dockerfile: ./build/Dockerfile
-```
-### `To just push an image on every git push`
-
-```
-name: Push image to GCR GitHub Action
-on: [push]
-jobs:
-  just-push-to-gcr:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: RafikFarhad/push-to-gcr-github-action@v4
-        with:
-          gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
-          registry: gcr.io
-          project_id: my-awesome-project
-          image_name: server-end
-          push_only: true
-
-```
+[Different Variants] (https://github.com/RafikFarhad/push-to-gcr-github-action/tree/master/example)
+[Workflow] (https://github.com/RafikFarhad/push-to-gcr-github-action/tree/master/.github/workflows)
