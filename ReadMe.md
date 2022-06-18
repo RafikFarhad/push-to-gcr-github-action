@@ -57,3 +57,11 @@ To create service key/account visit [here](https://console.cloud.google.com/iam-
 
 [Different Variants] (https://github.com/RafikFarhad/push-to-gcr-github-action/tree/master/example)
 [Workflow] (https://github.com/RafikFarhad/push-to-gcr-github-action/tree/master/.github/workflows)
+
+## Contribution
+- Fork
+- Implement you awesome idea or fix a bug
+- Create PR 🎉
+
+NB: The included workflow which tests the action's basic functionalities needs a Github secrets named `JSON_GCLOUD_SERVICE_ACCOUNT_JSON`.
+Currently, the workflow is not testable for forked repositories but I have an action item to enable this.  
