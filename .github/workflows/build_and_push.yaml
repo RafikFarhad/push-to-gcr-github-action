@@ -44,4 +44,4 @@ jobs:
         with:
           credentials_json: '${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}'
       - name: "Delete images"
-        run: docker rm gcr.io/pro-chesta/hello-world-by-push-to-gcr:${{ github.sha }} gcr.io/pro-chesta/hello-world-by-push-to-gcr:test-${{ github.sha }}
+        run: docker image rm gcr.io/pro-chesta/hello-world-by-push-to-gcr:${{ github.sha }} gcr.io/pro-chesta/hello-world-by-push-to-gcr:test-${{ github.sha }}
