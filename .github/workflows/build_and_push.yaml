@@ -45,10 +45,10 @@ jobs:
     continue-on-error: true
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v0'
         with:
           credentials_json: '${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}'
-          create_credentials_file: false
       - name: "Delete images"
         run: gcloud container images delete gcr.io/pro-chesta/hello-world-by-push-to-gcr:${{ github.sha }} --force-delete-tags --quiet
