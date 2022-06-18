@@ -6,13 +6,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: google-github-actions/setup-gcloud@master
-      - uses: RafikFarhad/push-to-gcr-github-action@v3.0.2
+      - uses: RafikFarhad/push-to-gcr-github-action@v4
         with:
-          gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
+          gcloud_service_key: ${{ secrets.B64_GCLOUD_SERVICE_ACCOUNT_JSON }}
           registry: gcr.io
-          project_id: source-code-oj
-          image_name: push-to-gcr-action-test
-          image_tag: v2,latest
+          project_id: pro-chesta
+          image_name: hello-world-by-push-to-gcr
+          image_tag: v4,latest
           dockerfile: ./test/Dockerfile.test
           context: ./test
           target: build
