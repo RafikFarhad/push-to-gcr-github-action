@@ -23,6 +23,9 @@ jobs:
           dockerfile: ./test/Dockerfile.test
           context: ./test
           target: build
+  # If you are checking this file to use this action in your project,
+  # you only need the first step 👆.
+  # The following two steps are needed to test this action.
   test-image:
     name: "Testing the image"
     needs: [build-and-push-to-gcr]
