@@ -11,7 +11,6 @@ jobs:
       - name: Get the tag name
         id: get_tag_name
         run: echo ::set-output name=GIT_TAG_NAME::${GITHUB_REF/refs\/tags\//}
-      - uses: google-github-actions/setup-gcloud@master
       - uses: RafikFarhad/push-to-gcr-github-action@v4
         with:
           gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
