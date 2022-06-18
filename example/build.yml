@@ -1,17 +1,11 @@
 name: Push to GCR GitHub Action
-on: 
-  - push:
-    branches:
-      - master
-  - pull_request:
-    branches:
-      - master
+on: [push]
 jobs:
   build-and-push-to-gcr:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: ./action.yaml
+      - uses: RafikFarhad/push-to-gcr-github-action@v4
         with:
           gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
           registry: gcr.io
