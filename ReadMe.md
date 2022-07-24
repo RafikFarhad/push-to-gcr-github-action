@@ -72,8 +72,9 @@ jobs:
           dockerfile: ./docker/Dockerfile.prod
           context: ./docker
 ```
-[More Example] (https://github.com/RafikFarhad/push-to-gcr-github-action/tree/master/example)
-[Workflow Example] (https://github.com/RafikFarhad/push-to-gcr-github-action/tree/master/.github/workflows)
+[More Example](https://github.com/RafikFarhad/push-to-gcr-github-action/tree/master/example)
+
+[Workflow Example](https://github.com/RafikFarhad/push-to-gcr-github-action/tree/master/.github/workflows)
 
 ## Contribution
 - Fork
