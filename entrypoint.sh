@@ -25,7 +25,7 @@ else
 fi
 
 if cat /tmp/key.json | docker login -u _json_key --password-stdin https://$INPUT_REGISTRY; then
-    echo "Logged in to google cloud ..."
+    echo "Logged into google cloud ..."
 else
     echo "Docker login failed. Exiting ..."
     exit 1
