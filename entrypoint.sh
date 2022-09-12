@@ -36,7 +36,7 @@ ALL_IMAGE_TAG=($(python -c "print(' '.join(list(set([v for v in [v.strip() for v
 
 # default to 'latest' when $ALL_IMAGE_TAG is empty
 if [ ${#ALL_IMAGE_TAG[@]} -eq 0 ] ; then
-    echo "INPUT_IMAGE_TAG tag is not persable. Using latest by default"
+    echo "INPUT_IMAGE_TAG tag is not parsable. Using latest by default"
     ALL_IMAGE_TAG=(latest)
 fi
 
