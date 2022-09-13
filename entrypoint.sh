@@ -25,7 +25,7 @@ else
 fi
 
 if cat /tmp/key.json | docker login -u _json_key --password-stdin https://$INPUT_REGISTRY; then
-    echo "Logged in to google cloud ..."
+    echo "Logged into google cloud ..."
 else
     echo "Docker login failed. Exiting ..."
     exit 1
@@ -36,7 +36,7 @@ ALL_IMAGE_TAG=($(python -c "print(' '.join(list(set([v for v in [v.strip() for v
 
 # default to 'latest' when $ALL_IMAGE_TAG is empty
 if [ ${#ALL_IMAGE_TAG[@]} -eq 0 ] ; then
-    echo "INPUT_IMAGE_TAG tag is not persable. Using latest by default"
+    echo "INPUT_IMAGE_TAG tag is not parsable. Using latest by default"
     ALL_IMAGE_TAG=(latest)
 fi
 

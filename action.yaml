@@ -33,7 +33,7 @@ inputs:
     required: false
     default: '.'
   target:
-    description: Mutli-staged build target
+    description: Multi-staged build target
     required: false
     default: ""
   build_args:

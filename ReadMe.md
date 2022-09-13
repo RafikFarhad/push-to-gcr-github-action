@@ -81,5 +81,5 @@ jobs:
 - Implement your awesome idea or fix a bug
 - Create PR 🎉
 
-NB: The included workflow which tests the action's basic functionalities needs a Github secret named `JSON_GCLOUD_SERVICE_ACCOUNT_JSON`.
+NB: The included workflow which tests the action's basic functionalities needs a GitHub secret named `JSON_GCLOUD_SERVICE_ACCOUNT_JSON`.
 Currently, the workflow is not testable for forked repositories but I have an action item to enable this.  

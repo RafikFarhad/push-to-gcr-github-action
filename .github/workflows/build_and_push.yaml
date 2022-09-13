@@ -8,7 +8,7 @@ on:
       - master
 jobs:
   build-and-push-to-gcr:
-    name: "Bulding and pushing images"
+    name: "Building and pushing images"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
