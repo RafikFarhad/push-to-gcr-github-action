@@ -72,7 +72,7 @@ jobs:
           dockerfile: ./docker/Dockerfile.prod
           context: ./docker
 ```
-[More Example](https://github.com/RafikFarhad/push-to-gcr-github-action/tree/master/example)
+[More Example](https://github.com/RafikFarhad/push-to-gcr-github-action/tree/master/examples)
 
 [Workflow Example](https://github.com/RafikFarhad/push-to-gcr-github-action/tree/master/.github/workflows)
 
