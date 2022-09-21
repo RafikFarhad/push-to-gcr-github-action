@@ -23,7 +23,7 @@ The tag for the image. To create multiple tags of the same image, provide a comm
 
 Default: `latest`.
 
-To use the pushed `Tag Name` as image tag, see the [example](https://github.com/RafikFarhad/push-to-gcr-github-action/blob/master/example/build_only_tags.yml).
+To use the pushed `Tag Name` as image tag, see the [example](https://github.com/RafikFarhad/push-to-gcr-github-action/blob/master/examples/build_only_tags.yml).
 
 ### `dockerfile`
 The image building Dockerfile. 
