@@ -19,8 +19,9 @@ jobs:
         id: 'auth'
         uses: 'google-github-actions/auth@v0'
         with:
-          workload_identity_provider: 'projects/331888282073/locations/global/workloadIdentityPools/push-to-gcr-pool/providers/gh-action'
-          service_account: 'push-to-gcr-storage-object-adm@pro-chesta.iam.gserviceaccount.com'
+          credentials_json: '${{ secrets.B64_GCLOUD_SERVICE_ACCOUNT_JSON }}'
+          # workload_identity_provider: 'projects/331888282073/locations/global/workloadIdentityPools/push-to-gcr-pool/providers/gh-action'
+          # service_account: 'push-to-gcr-storage-object-adm@pro-chesta.iam.gserviceaccount.com'
       - name: "Building and pushing the image"
         uses: RafikFarhad/push-to-gcr-github-action@feature/workload-identity
         with:
