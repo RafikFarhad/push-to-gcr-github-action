@@ -42,7 +42,7 @@ if ! gcloud auth login --cred-file=/tmp/key.json --quiet; then
     exit 1
 fi
 
-if gcloud auth configure-docker $INPUT_REGISTRY; then
+if gcloud auth configure-docker $INPUT_REGISTRY --quiet; then
     echo "Authentication successful to $INPUT_REGISTRY ..."
 else
     echo "Docker login failed. Exiting ..."
