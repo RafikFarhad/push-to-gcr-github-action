@@ -7,7 +7,7 @@ branding:
 inputs:
   gcloud_service_key:
     description: Google cloud service key json file as plain text or base64 encrypted
-    required: true
+    required: false
   registry:
     description: The registry where the image should be pushed
     required: false

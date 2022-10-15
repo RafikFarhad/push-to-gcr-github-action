@@ -4,7 +4,7 @@ LABEL maintainer="RafikFarhad <rafikfarhad@gmail.com>"
 
 RUN apk update && \
   apk upgrade && \
-  apk add --no-cache python bash
+  apk add --no-cache python3 bash
 
 ADD entrypoint.sh /entrypoint.sh
 

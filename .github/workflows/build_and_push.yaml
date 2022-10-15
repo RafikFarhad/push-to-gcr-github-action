@@ -10,10 +10,19 @@ jobs:
   build-and-push-to-gcr:
     name: "Building and pushing images"
     runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - name: 'Authenticate to Google Cloud'
+        id: 'auth'
+        uses: 'google-github-actions/auth@v0'
+        with:
+          workload_identity_provider: 'projects/331888282073/locations/global/workloadIdentityPools/push-to-gcr-pool/providers/gh-action'
+          service_account: 'push-to-gcr-storage-object-adm@pro-chesta.iam.gserviceaccount.com'
       - name: "Building and pushing the image"
-        uses: ./
+        uses: RafikFarhad/push-to-gcr-github-action@feature/workload-identity
         with:
           gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}
           registry: gcr.io

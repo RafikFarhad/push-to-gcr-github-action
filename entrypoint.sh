@@ -5,34 +5,48 @@
 #date           :20200703
 #version        :2.0.1
 #usage          :./entrypoint.sh
-#notes          :Required env values are: INPUT_GCLOUD_SERVICE_KEY,INPUT_REGISTRY,INPUT_PROJECT_ID,INPUT_IMAGE_NAME
-#                Optional env values are: INPUT_IMAGE_TAG,INPUT_DOCKERFILE,INPUT_TARGET,INPUT_CONTEXT,INPUT_BUILD_ARGS
+#notes          :Required env values are: INPUT_REGISTRY,INPUT_PROJECT_ID,INPUT_IMAGE_NAME
+#                Optional env values are: INPUT_GCLOUD_SERVICE_KEY,INPUT_IMAGE_TAG,INPUT_DOCKERFILE,INPUT_TARGET,INPUT_CONTEXT,INPUT_BUILD_ARGS
 #bash_version   :5.0.17(1)-release
 ###################################################
 
 ALL_IMAGE_TAG=()
 
-echo "Authenticating docker to gcloud ..."
-if ! echo $INPUT_GCLOUD_SERVICE_KEY | python -m base64 -d >/tmp/key.json 2>/dev/null; then
-    if ! echo $INPUT_GCLOUD_SERVICE_KEY >/tmp/key.json 2>/dev/null; then
-        echo "Failed to get gcloud_service_key. It could be plain text or base64 encoded service account JSON file"
-        exit 1
-    else
-        echo "This action is unable to decode INPUT_GCLOUD_SERVICE_KEY as base64. It assumes INPUT_GCLOUD_SERVICE_KEY as plain text."
-    fi
+# detect service_account json flavour
+if [ $GOOGLE_APPLICATION_CREDENTIALS ] && ls $GOOGLE_APPLICATION_CREDENTIALS; then
+    # workload identity
+    echo "Workload identity found ..."
+    cp $GOOGLE_APPLICATION_CREDENTIALS /tmp/key.json
 else
-    echo "Successfully decoded from base64"
+    if [ -z $INPUT_GCLOUD_SERVICE_KEY ]; then
+        echo "GCLOUD_SERVICE_KEY is a required field when workload identity is not used. Exiting ..."
+        exit 1
+    fi
+
+    # persing service account json
+    if ! echo $INPUT_GCLOUD_SERVICE_KEY | python3 -m base64 -d >/tmp/key.json 2>/dev/null; then
+        if ! echo $INPUT_GCLOUD_SERVICE_KEY >/tmp/key.json 2>/dev/null; then
+            echo "Failed to get gcloud_service_key. It could be plain text or base64 encoded service account JSON file"
+            exit 1
+        else
+            # service account found as plain text json
+            echo "This action is unable to decode INPUT_GCLOUD_SERVICE_KEY as base64. It assumes INPUT_GCLOUD_SERVICE_KEY as plain text"
+        fi
+    else
+        # service account found as base64 encoded json
+        echo "Successfully decoded from base64"
+    fi
 fi
 
-if cat /tmp/key.json | docker login -u _json_key --password-stdin https://$INPUT_REGISTRY; then
-    echo "Logged into google cloud ..."
+if cat /tmp/key.json | docker login -u _json_key --password-stdin $INPUT_REGISTRY; then
+    echo "Authentication successful to $INPUT_REGISTRY ..."
 else
     echo "Docker login failed. Exiting ..."
     exit 1
 fi
 
 # split -> trim -> compact -> uniq -> bash array
-ALL_IMAGE_TAG=($(python -c "print(' '.join(list(set([v for v in [v.strip() for v in '$INPUT_IMAGE_TAG'.split(',')] if v]))))"))
+ALL_IMAGE_TAG=($(python3 -c "print(' '.join(list(set([v for v in [v.strip() for v in '$INPUT_IMAGE_TAG'.split(',')] if v]))))"))
 
 # default to 'latest' when $ALL_IMAGE_TAG is empty
 if [ ${#ALL_IMAGE_TAG[@]} -eq 0 ] ; then
