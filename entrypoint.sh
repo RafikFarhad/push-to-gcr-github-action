@@ -22,7 +22,6 @@ else
         echo "GCLOUD_SERVICE_KEY is a required field when workload identity is not used. Exiting ..."
         exit 1
     fi
-
     # persing service account json
     if ! echo $INPUT_GCLOUD_SERVICE_KEY | python3 -m base64 -d >/tmp/key.json 2>/dev/null; then
         if ! echo $INPUT_GCLOUD_SERVICE_KEY >/tmp/key.json 2>/dev/null; then
@@ -38,7 +37,12 @@ else
     fi
 fi
 
-if cat /tmp/key.json | docker login -u _json_key --password-stdin $INPUT_REGISTRY; then
+if ! gcloud auth login --cred-file=/tmp/key.json --quiet; then
+    echo "Unable to login to gcloud. Exiting ..."
+    exit 1
+fi
+
+if gcloud auth configure-docker $INPUT_REGISTRY; then
     echo "Authentication successful to $INPUT_REGISTRY ..."
 else
     echo "Docker login failed. Exiting ..."
