@@ -6,9 +6,9 @@ RUN apk update && \
   apk upgrade && \
   apk add --no-cache python3 bash curl
 
-RUN curl https://sdk.cloud.google.com | bash -s -- --disable-prompts
+RUN curl -sSL https://sdk.cloud.google.com > /tmp/gcl && bash /tmp/gcl --install-dir=/root/gcloud --disable-prompts
 
-ENV PATH $PATH:/usr/local/gcloud/google-cloud-sdk/bin
+ENV PATH $PATH:/root/gcloud/google-cloud-sdk/bin
 
 ADD entrypoint.sh /entrypoint.sh
 
