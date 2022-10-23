@@ -56,7 +56,7 @@ It is possible to use a lower access level `Storage Object Admin`, but it will w
 
 To create service key/account visit [here](https://console.cloud.google.com/iam-admin/serviceaccounts)
 
-### Workload Identity Fedaration
+### Workload Identity Federation
 If you want to use [Workload Identity Federation](https://cloud.google.com/iam/docs/workload-identity-federation), follow the steps from [here](https://github.com/google-github-actions/auth#setting-up-workload-identity-federation) to set up **Workload Identity Federation**
 
 ## Example usage
