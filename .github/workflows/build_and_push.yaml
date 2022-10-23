@@ -99,7 +99,7 @@ jobs:
       - build-and-push-to-gcr-workload-identity
       - build-and-push-to-gcr-service-account
       - build-and-push-to-gcr-without-gcloud
-      - test-image
+      - test-images
     if: always()
     continue-on-error: true
     runs-on: ubuntu-latest
