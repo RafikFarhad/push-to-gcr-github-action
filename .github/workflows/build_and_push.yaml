@@ -80,14 +80,9 @@ jobs:
       - build-and-push-to-gcr-without-gcloud
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix: 
         type: [0, 1, 2, 3]
-    container: 
-      image: "gcr.io/pro-chesta/hello-world-by-push-to-gcr-${{ matrix.type }}:${{ github.sha }}"
-      credentials:
-        username: _json_key
-        password: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}
     steps:
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v0
