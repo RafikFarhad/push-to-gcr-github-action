@@ -23,7 +23,8 @@ jobs:
           workload_identity_provider: projects/331888282073/locations/global/workloadIdentityPools/push-to-gcr-pool/providers/gh-action
           service_account: push-to-gcr-storage-object-adm@pro-chesta.iam.gserviceaccount.com
       - name: Building and pushing the image
-        uses: RafikFarhad/push-to-gcr-github-action@feature/workload-identity
+        uses: ./
+        # uses: RafikFarhad/push-to-gcr-github-action@v5-beta # <- use this on your workflow
         with:
           # gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }} # <- not needed when used with google-github-actions/auth@v0
           registry: gcr.io
@@ -45,7 +46,8 @@ jobs:
         with:
           credentials_json: '${{ secrets.B64_GCLOUD_SERVICE_ACCOUNT_JSON }}'
       - name: Building and pushing the image
-        uses: RafikFarhad/push-to-gcr-github-action@feature/workload-identity
+        uses: ./
+        # uses: RafikFarhad/push-to-gcr-github-action@v5-beta # <- use this on your workflow
         with:
           # gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }} # <- not needed when used with google-github-actions/auth@v0
           registry: gcr.io
@@ -62,7 +64,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Building and pushing the image
-        uses: RafikFarhad/push-to-gcr-github-action@feature/workload-identity
+        uses: ./
+        # uses: RafikFarhad/push-to-gcr-github-action@v5-beta # <- use this on your workflow
         with:
           gcloud_service_key: "${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}"
           registry: gcr.io
