@@ -7,48 +7,113 @@ on:
     branches:
       - master
 jobs:
-  build-and-push-to-gcr:
-    name: "Building and pushing images"
+  # example with Workload Identity Federation
+  build-and-push-to-gcr-workload-identity:
+    name: Build & push - with workload identity
     runs-on: ubuntu-latest
+    permissions: # <- this section is needed for workload identity
+      contents: 'read'
+      id-token: 'write'
     steps:
-      - uses: actions/checkout@v2
-      - name: "Building and pushing the image"
-        uses: ./
+      - uses: actions/checkout@v3
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v0
         with:
-          gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}
+          workload_identity_provider: projects/331888282073/locations/global/workloadIdentityPools/push-to-gcr-pool/providers/gh-action
+          service_account: push-to-gcr-storage-object-adm@pro-chesta.iam.gserviceaccount.com
+      - name: Building and pushing the image
+        uses: ./
+        # uses: RafikFarhad/push-to-gcr-github-action@v5-beta # <- use this on your workflow
+        with:
+          # gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }} # <- not needed when used with google-github-actions/auth@v0
           registry: gcr.io
           project_id: pro-chesta
-          image_name: hello-world-by-push-to-gcr
+          image_name: hello-world-by-push-to-gcr-0
           image_tag: test-${{ github.sha }}, ${{ github.sha }}
           dockerfile: ./test/Dockerfile.test
           context: ./test
           target: build
-  # If you are checking this file to use this action in your project,
-  # you only need the first step 👆.
-  # The following two steps are needed to test this action.
-  test-image:
-    name: "Testing the image"
-    needs: [build-and-push-to-gcr]
+  # example with gcloud service account key
+  build-and-push-to-gcr-service-account:
+    name: Build & push - with service account
     runs-on: ubuntu-latest
-    container: 
-      image: "gcr.io/pro-chesta/hello-world-by-push-to-gcr:${{ github.sha }}"
-      credentials:
-        username: _json_key
-        password: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}
     steps:
-      - name: "Testing the image"
-        run: exit $([ "$(/root/executable)" = "Hello World from Push To GCR github action" ])
+      - uses: actions/checkout@v3
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: '${{ secrets.B64_GCLOUD_SERVICE_ACCOUNT_JSON }}'
+      - name: Building and pushing the image
+        uses: ./
+        # uses: RafikFarhad/push-to-gcr-github-action@v5-beta # <- use this on your workflow
+        with:
+          # gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }} # <- not needed when used with google-github-actions/auth@v0
+          registry: gcr.io
+          project_id: pro-chesta
+          image_name: hello-world-by-push-to-gcr-1
+          image_tag: test-${{ github.sha }}, ${{ github.sha }}
+          dockerfile: ./test/Dockerfile.test
+          context: ./test
+          target: build
+  # example with gcloud service account key, except using google-github-actions/auth step. the login is handled by this action 
+  build-and-push-to-gcr-without-gcloud-auth-action:
+    name: Build & push - without gcloud auth action
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Building and pushing the image
+        uses: ./
+        # uses: RafikFarhad/push-to-gcr-github-action@v5-beta # <- use this on your workflow
+        with:
+          gcloud_service_key: "${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}"
+          registry: gcr.io
+          project_id: pro-chesta
+          image_name: hello-world-by-push-to-gcr-2
+          image_tag: test-${{ github.sha }}, ${{ github.sha }}
+          dockerfile: ./test/Dockerfile.test
+          context: ./test
+          target: build
+  # if you are checking this file to use this action in your project,
+  # you only need obe of the above steps 👆.
+  test-images:
+    name: Test images from registry
+    needs: 
+      - build-and-push-to-gcr-workload-identity
+      - build-and-push-to-gcr-service-account
+      - build-and-push-to-gcr-without-gcloud-auth-action
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: 
+        type: [0, 1, 2]
+    steps:
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}
+      - name: Testing the image
+        run: |
+          cat ${GOOGLE_APPLICATION_CREDENTIALS} | docker login -u _json_key --password-stdin gcr.io
+          exit $([ "$(docker run gcr.io/pro-chesta/hello-world-by-push-to-gcr-${{ matrix.type }}:${{ github.sha }})" = "Hello World from Push To GCR github action" ])
   cleanup:
-    name: "Cleaning up images"
-    needs: [build-and-push-to-gcr, test-image]
+    name: Clean up images
+    needs: 
+      - build-and-push-to-gcr-workload-identity
+      - build-and-push-to-gcr-service-account
+      - build-and-push-to-gcr-without-gcloud-auth-action
+      - test-images
     if: always()
     continue-on-error: true
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: 'Authenticate to Google Cloud'
-        uses: 'google-github-actions/auth@v0'
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v0
         with:
-          credentials_json: '${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}'
-      - name: "Delete images"
-        run: gcloud container images delete gcr.io/pro-chesta/hello-world-by-push-to-gcr:${{ github.sha }} --force-delete-tags --quiet
+          credentials_json: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}
+      - name: Delete images
+        run: |
+          gcloud container images delete gcr.io/pro-chesta/hello-world-by-push-to-gcr-0:${{ github.sha }} --force-delete-tags --quiet
+          gcloud container images delete gcr.io/pro-chesta/hello-world-by-push-to-gcr-1:${{ github.sha }} --force-delete-tags --quiet
+          gcloud container images delete gcr.io/pro-chesta/hello-world-by-push-to-gcr-2:${{ github.sha }} --force-delete-tags --quiet

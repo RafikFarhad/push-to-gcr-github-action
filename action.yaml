@@ -6,8 +6,8 @@ branding:
   color: gray-dark
 inputs:
   gcloud_service_key:
-    description: Google cloud service key json file as plain text or base64 encrypted
-    required: true
+    description: Google cloud service key json file as plain text or base64 encrypted. This field is optional if you are using this action with https://github.com/google-github-actions/auth
+    required: false
   registry:
     description: The registry where the image should be pushed
     required: false
@@ -45,4 +45,4 @@ inputs:
     default: false
 runs:
   using: docker
-  image: Dockerfile
+  image: docker://ghcr.io/rafikfarhad/push-to-gcr-action:1.0.0

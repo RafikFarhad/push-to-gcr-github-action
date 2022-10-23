@@ -3,7 +3,7 @@ FROM gcc:10.1.0 AS build
 WORKDIR /root
 COPY HelloWorld.c .
 RUN gcc -o executable HelloWorld.c 
-
+ENTRYPOINT ["./executable"]
 
 FROM gcc:10.1.0 AS prod
 WORKDIR /root
