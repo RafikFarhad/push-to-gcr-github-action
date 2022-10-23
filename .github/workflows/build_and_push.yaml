@@ -8,7 +8,7 @@ on:
       - master
 jobs:
   build-and-push-to-gcr-workload-identity:
-    name: Building and pushing images - with workload identity
+    name: Build & push - with workload identity
     runs-on: ubuntu-latest
     permissions: # <- This section is needed for workload identity
       contents: 'read'
@@ -19,13 +19,12 @@ jobs:
         id: auth
         uses: google-github-actions/auth@v0
         with:
-          # credentials_json: '${{ secrets.B64_GCLOUD_SERVICE_ACCOUNT_JSON }}'
           workload_identity_provider: projects/331888282073/locations/global/workloadIdentityPools/push-to-gcr-pool/providers/gh-action
           service_account: push-to-gcr-storage-object-adm@pro-chesta.iam.gserviceaccount.com
-      - name: "Building and pushing the image"
+      - name: Building and pushing the image
         uses: RafikFarhad/push-to-gcr-github-action@feature/workload-identity
         with:
-          # gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }} <- Not needed when used with google-github-actions/auth@v0
+          # gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }} # <- Not needed when used with google-github-actions/auth@v0
           registry: gcr.io
           project_id: pro-chesta
           image_name: hello-world-by-push-to-gcr-0
@@ -34,7 +33,7 @@ jobs:
           context: ./test
           target: build
   build-and-push-to-gcr-service-account:
-    name: Building and pushing images - with service account
+    name: Build & push - with service account
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -43,13 +42,29 @@ jobs:
         uses: google-github-actions/auth@v0
         with:
           credentials_json: '${{ secrets.B64_GCLOUD_SERVICE_ACCOUNT_JSON }}'
-      - name: "Building and pushing the image"
+      - name: Building and pushing the image
         uses: RafikFarhad/push-to-gcr-github-action@feature/workload-identity
         with:
-          # gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }} <- Not needed when used with google-github-actions/auth@v0
+          # gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }} # <- Not needed when used with google-github-actions/auth@v0
           registry: gcr.io
           project_id: pro-chesta
           image_name: hello-world-by-push-to-gcr-1
+          image_tag: test-${{ github.sha }}, ${{ github.sha }}
+          dockerfile: ./test/Dockerfile.test
+          context: ./test
+          target: build
+  build-and-push-to-gcr-without-gcloud:
+    name: Build & push - without gcloud
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Building and pushing the image
+        uses: RafikFarhad/push-to-gcr-github-action@feature/workload-identity
+        with:
+          gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }} # <- Not needed when used with google-github-actions/auth@v0
+          registry: gcr.io
+          project_id: pro-chesta
+          image_name: hello-world-by-push-to-gcr-2
           image_tag: test-${{ github.sha }}, ${{ github.sha }}
           dockerfile: ./test/Dockerfile.test
           context: ./test
@@ -64,9 +79,9 @@ jobs:
     strategy:
       fail-fast: true
       matrix: 
-        type: [0, 1]
+        type: [0, 1, 2]
     container: 
-      image: "gcr.io/pro-chesta/hello-world-by-push-to-gcr${{ matrix.type }}:${{ github.sha }}"
+      image: "gcr.io/pro-chesta/hello-world-by-push-to-gcr-${{ matrix.type }}:${{ github.sha }}"
       credentials:
         username: _json_key
         password: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}
@@ -89,3 +104,4 @@ jobs:
         run: |
           gcloud container images delete gcr.io/pro-chesta/hello-world-by-push-to-gcr-0:${{ github.sha }} --force-delete-tags --quiet
           gcloud container images delete gcr.io/pro-chesta/hello-world-by-push-to-gcr-1:${{ github.sha }} --force-delete-tags --quiet
+          gcloud container images delete gcr.io/pro-chesta/hello-world-by-push-to-gcr-2:${{ github.sha }} --force-delete-tags --quiet
