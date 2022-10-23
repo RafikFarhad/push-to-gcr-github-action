@@ -58,7 +58,7 @@ jobs:
   # you only need the first step 👆.
   # The following two steps are needed to test this action.
   test-image:
-    name: "Testing the image"
+    name: Testing the image
     needs: [build-and-push-to-gcr-workload-identity, build-and-push-to-gcr-service-account]
     runs-on: ubuntu-latest
     strategy:
@@ -66,15 +66,15 @@ jobs:
       matrix: 
         type: [0, 1]
     container: 
-      image: "gcr.io/pro-chesta/hello-world-by-push-to-gcr${{ matrix:.type }}:${{ github.sha }}"
+      image: "gcr.io/pro-chesta/hello-world-by-push-to-gcr${{ matrix.type }}:${{ github.sha }}"
       credentials:
         username: _json_key
         password: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}
     steps:
-      - name: "Testing the image"
+      - name: Testing the image
         run: exit $([ "$(/root/executable)" = "Hello World from Push To GCR github action" ])
   cleanup:
-    name: "Cleaning up images"
+    name: Cleaning up images
     needs: [build-and-push-to-gcr, test-image]
     if: always()
     continue-on-error: true
@@ -85,7 +85,7 @@ jobs:
         uses: google-github-actions/auth@v0
         with:
           credentials_json: '${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}'
-      - name: "Delete images"
+      - name: Delete images
         run: |
           gcloud container images delete gcr.io/pro-chesta/hello-world-by-push-to-gcr-0:${{ github.sha }} --force-delete-tags --quiet
           gcloud container images delete gcr.io/pro-chesta/hello-world-by-push-to-gcr-1:${{ github.sha }} --force-delete-tags --quiet
