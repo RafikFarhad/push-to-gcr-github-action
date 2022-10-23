@@ -7,10 +7,11 @@ on:
     branches:
       - master
 jobs:
+  # example with Workload Identity Federation
   build-and-push-to-gcr-workload-identity:
     name: Build & push - with workload identity
     runs-on: ubuntu-latest
-    permissions: # <- This section is needed for workload identity
+    permissions: # <- this section is needed for workload identity
       contents: 'read'
       id-token: 'write'
     steps:
@@ -24,7 +25,7 @@ jobs:
       - name: Building and pushing the image
         uses: RafikFarhad/push-to-gcr-github-action@feature/workload-identity
         with:
-          # gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }} # <- Not needed when used with google-github-actions/auth@v0
+          # gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }} # <- not needed when used with google-github-actions/auth@v0
           registry: gcr.io
           project_id: pro-chesta
           image_name: hello-world-by-push-to-gcr-0
@@ -32,6 +33,7 @@ jobs:
           dockerfile: ./test/Dockerfile.test
           context: ./test
           target: build
+  # example with gcloud service account key
   build-and-push-to-gcr-service-account:
     name: Build & push - with service account
     runs-on: ubuntu-latest
@@ -45,7 +47,7 @@ jobs:
       - name: Building and pushing the image
         uses: RafikFarhad/push-to-gcr-github-action@feature/workload-identity
         with:
-          # gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }} # <- Not needed when used with google-github-actions/auth@v0
+          # gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }} # <- not needed when used with google-github-actions/auth@v0
           registry: gcr.io
           project_id: pro-chesta
           image_name: hello-world-by-push-to-gcr-1
@@ -53,7 +55,8 @@ jobs:
           dockerfile: ./test/Dockerfile.test
           context: ./test
           target: build
-  build-and-push-to-gcr-without-gcloud:
+  # example with gcloud service account key, except using google-github-actions/auth step. the login is handled by this action 
+  build-and-push-to-gcr-without-gcloud-auth-action:
     name: Build & push - without gcloud
     runs-on: ubuntu-latest
     steps:
@@ -61,7 +64,7 @@ jobs:
       - name: Building and pushing the image
         uses: RafikFarhad/push-to-gcr-github-action@feature/workload-identity
         with:
-          gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }} # <- Not needed when used with google-github-actions/auth@v0
+          gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}
           registry: gcr.io
           project_id: pro-chesta
           image_name: hello-world-by-push-to-gcr-2
@@ -69,15 +72,14 @@ jobs:
           dockerfile: ./test/Dockerfile.test
           context: ./test
           target: build
-  # If you are checking this file to use this action in your project,
-  # you only need the first step 👆.
-  # The following two steps are needed to test this action.
+  # if you are checking this file to use this action in your project,
+  # you only need obe of the above steps 👆.
   test-images:
     name: Test images from registry
     needs: 
       - build-and-push-to-gcr-workload-identity
       - build-and-push-to-gcr-service-account
-      - build-and-push-to-gcr-without-gcloud
+      - build-and-push-to-gcr-without-gcloud-auth-action
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -88,7 +90,6 @@ jobs:
         uses: google-github-actions/auth@v0
         with:
           credentials_json: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}
-          create_credentials_file: false
       - name: Testing the image
         run: |
           cat ${GOOGLE_APPLICATION_CREDENTIALS} | docker login -u _json_key --password-stdin gcr.io
@@ -98,7 +99,7 @@ jobs:
     needs: 
       - build-and-push-to-gcr-workload-identity
       - build-and-push-to-gcr-service-account
-      - build-and-push-to-gcr-without-gcloud
+      - build-and-push-to-gcr-without-gcloud-auth-action
       - test-images
     if: always()
     continue-on-error: true
@@ -108,7 +109,6 @@ jobs:
         uses: google-github-actions/auth@v0
         with:
           credentials_json: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}
-          create_credentials_file: false
       - name: Delete images
         run: |
           gcloud container images delete gcr.io/pro-chesta/hello-world-by-push-to-gcr-0:${{ github.sha }} --force-delete-tags --quiet

@@ -1,6 +1,6 @@
 # Push to GCR GitHub Action
 
-An action that builds docker image and pushes to Google Cloud Registry.
+An action that builds docker image and pushes to Google Cloud Registry and [Google Artifact Registry](https://github.com/RafikFarhad/push-to-gcr-github-action/issues/35).
 
 This action can be used to perform on every git `push` or every `tag` creation.
 
@@ -8,8 +8,10 @@ This action can be used to perform on every git `push` or every `tag` creation.
 
 ### `gcloud_service_key`
 The service account key of google cloud. The JSON file can be encoded in base64 or in plain text. 
+
 Prior to version 4.1 - This field is required.
-From version 4.2 - This field is optional if you are using workload identity with [`google-github-actions/auth@v0`](https://github.com/google-github-actions/auth)
+
+From version 5 - This field is optional when you are using workload identity with [google-github-actions/auth](https://github.com/google-github-actions/auth)
 ### `registry`
 The registry where the image should be pushed. Default `gcr.io`.
 
@@ -54,6 +56,9 @@ It is possible to use a lower access level `Storage Object Admin`, but it will w
 
 To create service key/account visit [here](https://console.cloud.google.com/iam-admin/serviceaccounts)
 
+### Workload Identity Fedaration
+If you want to use [Workload Identity Federation](https://cloud.google.com/iam/docs/workload-identity-federation), follow the steps from [here](https://github.com/google-github-actions/auth#setting-up-workload-identity-federation) to set up **Workload Identity Federation**
+
 ## Example usage
 ```yaml
 name: Push to GCR GitHub Action
@@ -61,11 +66,17 @@ on: [push]
 jobs:
   build-and-push-to-gcr:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: RafikFarhad/push-to-gcr-github-action@v4.1
+    steps:      
+      - uses: actions/checkout@v3
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v0
         with:
-          gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }} # can be base64 encoded or plain text
+          workload_identity_provider: projects/123123123/locations/global/workloadIdentityPools/the-workload-pool/providers/the-provider
+          service_account: only-storage-object-adm@<PROJECT_ID>.iam.gserviceaccount.com
+      - uses: RafikFarhad/push-to-gcr-github-action@v5-beta
+        with:
+          # gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }} # can be base64 encoded or plain text || not needed if you use google-github-actions/auth
           registry: gcr.io
           project_id: my-awesome-project
           image_name: backend
@@ -73,9 +84,9 @@ jobs:
           dockerfile: ./docker/Dockerfile.prod
           context: ./docker
 ```
-[More Example](https://github.com/RafikFarhad/push-to-gcr-github-action/tree/master/examples)
+[A complete workflow example](https://github.com/RafikFarhad/push-to-gcr-github-action/tree/master/.github/workflows) with all type of authentication flavour
 
-[Workflow Example](https://github.com/RafikFarhad/push-to-gcr-github-action/tree/master/.github/workflows)
+[More Example](https://github.com/RafikFarhad/push-to-gcr-github-action/tree/master/examples)
 
 ## Contribution
 - Fork
