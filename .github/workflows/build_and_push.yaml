@@ -64,7 +64,7 @@ jobs:
       - name: Building and pushing the image
         uses: RafikFarhad/push-to-gcr-github-action@feature/workload-identity
         with:
-          gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}
+          gcloud_service_key: ""
           registry: gcr.io
           project_id: pro-chesta
           image_name: hello-world-by-push-to-gcr-2
