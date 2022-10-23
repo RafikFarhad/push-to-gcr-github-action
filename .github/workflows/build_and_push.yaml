@@ -7,17 +7,17 @@ on:
     branches:
       - master
 jobs:
-  build-and-push-to-gcr:
-    name: "Building and pushing images"
+  build-and-push-to-gcr-workload-identity:
+    name: Building and pushing images - with workload identity
     runs-on: ubuntu-latest
-    permissions:
+    permissions: # <- This section is needed for workload identity
       contents: 'read'
       id-token: 'write'
     steps:
       - uses: actions/checkout@v3
-      - name: 'Authenticate to Google Cloud'
-        id: 'auth'
-        uses: 'google-github-actions/auth@v0'
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v0
         with:
           # credentials_json: '${{ secrets.B64_GCLOUD_SERVICE_ACCOUNT_JSON }}'
           workload_identity_provider: projects/331888282073/locations/global/workloadIdentityPools/push-to-gcr-pool/providers/gh-action
@@ -25,10 +25,31 @@ jobs:
       - name: "Building and pushing the image"
         uses: RafikFarhad/push-to-gcr-github-action@feature/workload-identity
         with:
-          gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}
+          # gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }} <- Not needed when used with google-github-actions/auth@v0
           registry: gcr.io
           project_id: pro-chesta
-          image_name: hello-world-by-push-to-gcr
+          image_name: hello-world-by-push-to-gcr-0
+          image_tag: test-${{ github.sha }}, ${{ github.sha }}
+          dockerfile: ./test/Dockerfile.test
+          context: ./test
+          target: build
+  build-and-push-to-gcr-service-account:
+    name: Building and pushing images - with service account
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: '${{ secrets.B64_GCLOUD_SERVICE_ACCOUNT_JSON }}'
+      - name: "Building and pushing the image"
+        uses: RafikFarhad/push-to-gcr-github-action@feature/workload-identity
+        with:
+          # gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }} <- Not needed when used with google-github-actions/auth@v0
+          registry: gcr.io
+          project_id: pro-chesta
+          image_name: hello-world-by-push-to-gcr-1
           image_tag: test-${{ github.sha }}, ${{ github.sha }}
           dockerfile: ./test/Dockerfile.test
           context: ./test
@@ -38,10 +59,14 @@ jobs:
   # The following two steps are needed to test this action.
   test-image:
     name: "Testing the image"
-    needs: [build-and-push-to-gcr]
+    needs: [build-and-push-to-gcr-workload-identity, build-and-push-to-gcr-service-account]
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix: 
+        type: [0, 1]
     container: 
-      image: "gcr.io/pro-chesta/hello-world-by-push-to-gcr:${{ github.sha }}"
+      image: "gcr.io/pro-chesta/hello-world-by-push-to-gcr${{ matrix:.type }}:${{ github.sha }}"
       credentials:
         username: _json_key
         password: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}
@@ -56,9 +81,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: 'Authenticate to Google Cloud'
-        uses: 'google-github-actions/auth@v0'
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v0
         with:
           credentials_json: '${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}'
       - name: "Delete images"
-        run: gcloud container images delete gcr.io/pro-chesta/hello-world-by-push-to-gcr:${{ github.sha }} --force-delete-tags --quiet
+        run: |
+          gcloud container images delete gcr.io/pro-chesta/hello-world-by-push-to-gcr-0:${{ github.sha }} --force-delete-tags --quiet
+          gcloud container images delete gcr.io/pro-chesta/hello-world-by-push-to-gcr-1:${{ github.sha }} --force-delete-tags --quiet
