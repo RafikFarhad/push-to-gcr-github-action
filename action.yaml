@@ -18,8 +18,12 @@ inputs:
     default: my-awesome-project
   image_name:
     description: The image name
-    required: true
-    default: backend-server
+    required: false
+    default: ""
+  all_prefixed_images:
+    description: Push all local images under the '$registry/$project_id/*' prefix. Expects that `image_name` be left blank and `push_only`=true.
+    required: false
+    default: false
   image_tag:
     description: Tag name
     required: false

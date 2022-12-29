@@ -83,24 +83,36 @@ else
     fi
 fi
 
-for IMAGE_TAG in ${ALL_IMAGE_TAG[@]}; do
+if [ "$INPUT_ALL_PREFIXED_IMAGES" = true ] ; then
+    # get the list of image names destined for our registry & project id from docker
+    IMAGE_NAMES=$(docker images --filter=reference="$INPUT_REGISTRY/$INPUT_PROJECT_ID/*" --format='{{.Repository}}')
+    IMAGE_NAMES=($(echo $IMAGE_NAMES | sed "s/$INPUT_REGISTRY\/$INPUT_PROJECT_ID\///g"))
+    # throw out duplicates
+    IMAGE_NAMES=$(echo "${IMAGE_NAMES[@]}" | tr ' ' '\n' | sort | uniq)
+else
+    IMAGE_NAMES=($INPUT)
+fi
 
-    IMAGE_NAME="$INPUT_REGISTRY/$INPUT_PROJECT_ID/$INPUT_IMAGE_NAME:$IMAGE_TAG"
+for IMAGE_NAME in ${IMAGE_NAMES[@]}; do
+    for IMAGE_TAG in ${ALL_IMAGE_TAG[@]}; do
 
-    echo "Fully qualified image name: $IMAGE_NAME"
+        IMAGE_NAME="$INPUT_REGISTRY/$INPUT_PROJECT_ID/$IMAGE_NAME:$IMAGE_TAG"
 
-    echo "Creating docker tag ..."
+        echo "Fully qualified image name: $IMAGE_NAME"
 
-    docker tag $TEMP_IMAGE_NAME $IMAGE_NAME
+        echo "Creating docker tag ..."
 
-    echo "Pushing image $IMAGE_NAME ..."
+        docker tag $TEMP_IMAGE_NAME $IMAGE_NAME
 
-    if ! docker push $IMAGE_NAME; then
-        echo "Pushing failed. Exiting ..."
-        exit 1
-    else
-        echo "Image pushed."
-    fi
+        echo "Pushing image $IMAGE_NAME ..."
+
+        if ! docker push $IMAGE_NAME; then
+            echo "Pushing failed. Exiting ..."
+            exit 1
+        else
+            echo "Image pushed."
+        fi
+    done
 done
 
 echo "Process complete."
