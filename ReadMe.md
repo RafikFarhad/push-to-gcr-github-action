@@ -66,6 +66,9 @@ on: [push]
 jobs:
   build-and-push-to-gcr:
     runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
     steps:      
       - uses: actions/checkout@v3
       - name: Authenticate to Google Cloud
