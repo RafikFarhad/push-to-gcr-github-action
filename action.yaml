@@ -49,4 +49,4 @@ inputs:
     default: ""
 runs:
   using: docker
-  image: docker://ghcr.io/rafikfarhad/push-to-gcr-action:1.0.0
+  image: docker://ghcr.io/nextstepguru/push-to-gcr-action:1.0.0
