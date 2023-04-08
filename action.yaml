@@ -49,4 +49,4 @@ inputs:
     default: ""
 runs:
   using: docker
-  image: docker://gcr.io/nextstepguru/push-to-gcr-action:latest
+  image: docker://ghcr.io/nextstepguru/push-to-gcr-action:latest
