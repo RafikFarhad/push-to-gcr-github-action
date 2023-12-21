@@ -62,6 +62,7 @@ TEMP_IMAGE_NAME="$INPUT_IMAGE_NAME:temporary"
 
 if [ "$INPUT_PUSH_ONLY" = true ]; then
     echo "Skipping image build ..."
+    TEMP_IMAGE_NAME="$INPUT_REGISTRY/$INPUT_PROJECT_ID/$INPUT_IMAGE_NAME:$ALL_IMAGE_TAG[0]"
 else
     echo "Building image ..."
     [ -z $INPUT_TARGET ] && TARGET_ARG="" || TARGET_ARG="--target $INPUT_TARGET"

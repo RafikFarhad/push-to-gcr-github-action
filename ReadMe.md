@@ -73,11 +73,11 @@ jobs:
       - uses: actions/checkout@v3
       - name: Authenticate to Google Cloud
         id: auth
-        uses: google-github-actions/auth@v0
+        uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: projects/123123123/locations/global/workloadIdentityPools/the-workload-pool/providers/the-provider
           service_account: only-storage-object-adm@<PROJECT_ID>.iam.gserviceaccount.com
-      - uses: RafikFarhad/push-to-gcr-github-action@v5-beta
+      - uses: RafikFarhad/push-to-gcr-github-action@v5-rc1
         with:
           # gcloud_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }} # can be base64 encoded or plain text || not needed if you use google-github-actions/auth
           registry: gcr.io
