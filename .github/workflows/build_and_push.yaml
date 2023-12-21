@@ -84,11 +84,10 @@ jobs:
       id-token: 'write'
     steps:
       - uses: actions/checkout@v3
+      # this step mimics your build step which produce a docker image that will be pushed to gcr
       - name: Prepare the image for push_only
         run: |
-          docker pull hello-world:latest
-          docker tag hello-world:latest gcr.io/pro-chesta/hello-world-by-push-to-gcr-3:${{ github.sha }}
-          # this step mimics your build step which produce a docker image that will be pushed to gcr
+          docker build -t gcr.io/pro-chesta/hello-world-by-push-to-gcr-3:${{ github.sha }} --file test/Dockerfile.test test
       - name: Authenticate to Google Cloud
         id: auth
         uses: google-github-actions/auth@v2
@@ -118,7 +117,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: 
-        type: [0, 1, 2]
+        type: [0, 1, 2, 3]
     steps:
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
