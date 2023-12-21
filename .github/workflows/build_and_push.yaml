@@ -24,7 +24,7 @@ jobs:
           service_account: push-to-gcr-storage-object-adm@pro-chesta.iam.gserviceaccount.com
       - name: Building and pushing the image
         uses: ./
-        # uses: RafikFarhad/push-to-gcr-github-action@v5-beta # <- use this on your workflow
+        # uses: RafikFarhad/push-to-gcr-github-action@v5-rc1 # <- use this on your workflow
         with:
           # gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }} # <- not needed when used with google-github-actions/auth@v0
           registry: gcr.io
@@ -47,7 +47,7 @@ jobs:
           credentials_json: '${{ secrets.B64_GCLOUD_SERVICE_ACCOUNT_JSON }}'
       - name: Building and pushing the image
         uses: ./
-        # uses: RafikFarhad/push-to-gcr-github-action@v5-beta # <- use this on your workflow
+        # uses: RafikFarhad/push-to-gcr-github-action@v5-rc1 # <- use this on your workflow
         with:
           # gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }} # <- not needed when used with google-github-actions/auth@v0
           registry: gcr.io
@@ -65,7 +65,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Building and pushing the image
         uses: ./
-        # uses: RafikFarhad/push-to-gcr-github-action@v5-beta # <- use this on your workflow
+        # uses: RafikFarhad/push-to-gcr-github-action@v5-rc1 # <- use this on your workflow
         with:
           gcloud_service_key: "${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}"
           registry: gcr.io
@@ -75,6 +75,35 @@ jobs:
           dockerfile: ./test/Dockerfile.test
           context: ./test
           target: build
+  # example with push-only
+  push-only-image:
+    name: Build & push - with workload identity
+    runs-on: ubuntu-latest
+    permissions: # <- this section is needed for workload identity
+      contents: 'read'
+      id-token: 'write'
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          docker pull hello-world:latest
+          docker tag hello-world:latest gcr.io/pro-chesta/hello-world-by-push-to-gcr-0:${{ github.sha }}
+          # this step mimics your build step which produce a docker image that will be pushed to gcr
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v0
+        with:
+          workload_identity_provider: projects/331888282073/locations/global/workloadIdentityPools/push-to-gcr-pool/providers/gh-action
+          service_account: push-to-gcr-storage-object-adm@pro-chesta.iam.gserviceaccount.com
+      - name: Building and pushing the image
+        uses: ./
+        # uses: RafikFarhad/push-to-gcr-github-action@v5-rc1 # <- use this on your workflow
+        with:
+          # gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }} # <- not needed when used with google-github-actions/auth@v0
+          registry: gcr.io
+          project_id: pro-chesta
+          image_name: hello-world-by-push-to-gcr-0
+          image_tag: ${{ github.sha }}
+          push_only: true
   # if you are checking this file to use this action in your project,
   # you only need obe of the above steps 👆.
   test-images:
