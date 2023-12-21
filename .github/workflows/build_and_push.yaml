@@ -77,7 +77,7 @@ jobs:
           target: build
   # example with push-only
   push-only-image:
-    name: Build & push - with workload identity
+    name: Push only - with workload identity
     runs-on: ubuntu-latest
     permissions: # <- this section is needed for workload identity
       contents: 'read'
