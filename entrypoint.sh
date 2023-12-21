@@ -6,7 +6,7 @@
 #version        :2.0.1
 #usage          :./entrypoint.sh
 #notes          :Required env values are: INPUT_REGISTRY,INPUT_PROJECT_ID,INPUT_IMAGE_NAME
-#                Optional env values are: INPUT_GCLOUD_SERVICE_KEY,INPUT_IMAGE_TAG,INPUT_DOCKERFILE,INPUT_TARGET,INPUT_CONTEXT,INPUT_BUILD_ARGS
+#                Optional env values are: INPUT_GCLOUD_SERVICE_KEY,INPUT_IMAGE_TAG,INPUT_DOCKERFILE,INPUT_TARGET,INPUT_CONTEXT,INPUT_BUILD_ARGS,INPUT_DOCKER_FLAGS
 #bash_version   :5.0.17(1)-release
 ###################################################
 
@@ -53,7 +53,7 @@ fi
 ALL_IMAGE_TAG=($(python3 -c "print(' '.join(list(set([v for v in [v.strip() for v in '$INPUT_IMAGE_TAG'.split(',')] if v]))))"))
 
 # default to 'latest' when $ALL_IMAGE_TAG is empty
-if [ ${#ALL_IMAGE_TAG[@]} -eq 0 ] ; then
+if [ ${#ALL_IMAGE_TAG[@]} -eq 0 ]; then
     echo "INPUT_IMAGE_TAG tag is not parsable. Using latest by default"
     ALL_IMAGE_TAG=(latest)
 fi
@@ -74,9 +74,9 @@ else
         done
     fi
 
-    echo "docker build $BUILD_PARAMS $TARGET_ARG -t $TEMP_IMAGE_NAME $FILE_ARG $INPUT_CONTEXT"
+    echo "docker build $INPUT_DOCKER_FLAGS $BUILD_PARAMS $TARGET_ARG -t $TEMP_IMAGE_NAME $FILE_ARG $INPUT_CONTEXT"
 
-    if docker build $BUILD_PARAMS $TARGET_ARG -t $TEMP_IMAGE_NAME $FILE_ARG $INPUT_CONTEXT; then
+    if docker build $INPUT_DOCKER_FLAGS $BUILD_PARAMS $TARGET_ARG -t $TEMP_IMAGE_NAME $FILE_ARG $INPUT_CONTEXT; then
         echo "Image built ..."
     else
         echo "Image building failed. Exiting ..."

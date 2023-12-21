@@ -11,7 +11,7 @@ inputs:
   registry:
     description: The registry where the image should be pushed
     required: false
-    default: 'gcr.io'
+    default: "gcr.io"
   project_id:
     description: The project id
     required: true
@@ -31,7 +31,7 @@ inputs:
   context:
     description: Docker build context
     required: false
-    default: '.'
+    default: "."
   target:
     description: Multi-staged build target
     required: false
@@ -42,7 +42,11 @@ inputs:
   push_only:
     description: Skip the build step and just push an image
     required: false
-    default: false
+    default: "false"
+  docker_flags:
+    description: An optional param to pass flags & other build parameters to docker
+    required: false
+    default: ""
 runs:
   using: docker
-  image: docker://ghcr.io/rafikfarhad/push-to-gcr-action:1.0.0
+  image: docker://ghcr.io/nextstepguru/push-to-gcr-action:v1.0.0
