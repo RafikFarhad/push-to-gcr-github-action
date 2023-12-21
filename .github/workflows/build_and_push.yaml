@@ -84,9 +84,10 @@ jobs:
       id-token: 'write'
     steps:
       - uses: actions/checkout@v3
-      - run: |
+      - name: Prepare the image for push_only
+        run: |
           docker pull hello-world:latest
-          docker tag hello-world:latest gcr.io/pro-chesta/hello-world-by-push-to-gcr-0:${{ github.sha }}
+          docker tag hello-world:latest gcr.io/pro-chesta/hello-world-by-push-to-gcr-3:${{ github.sha }}
           # this step mimics your build step which produce a docker image that will be pushed to gcr
       - name: Authenticate to Google Cloud
         id: auth
@@ -101,7 +102,7 @@ jobs:
           # gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }} # <- not needed when used with google-github-actions/auth@v0
           registry: gcr.io
           project_id: pro-chesta
-          image_name: hello-world-by-push-to-gcr-0
+          image_name: hello-world-by-push-to-gcr-3
           image_tag: ${{ github.sha }}
           push_only: true
   # if you are checking this file to use this action in your project,
@@ -112,6 +113,7 @@ jobs:
       - build-and-push-to-gcr-workload-identity
       - build-and-push-to-gcr-service-account
       - build-and-push-to-gcr-without-gcloud-auth-action
+      - push-only-image
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -132,6 +134,7 @@ jobs:
       - build-and-push-to-gcr-workload-identity
       - build-and-push-to-gcr-service-account
       - build-and-push-to-gcr-without-gcloud-auth-action
+      - push-only-image
       - test-images
     if: always()
     continue-on-error: true
@@ -146,3 +149,4 @@ jobs:
           gcloud container images delete gcr.io/pro-chesta/hello-world-by-push-to-gcr-0:${{ github.sha }} --force-delete-tags --quiet
           gcloud container images delete gcr.io/pro-chesta/hello-world-by-push-to-gcr-1:${{ github.sha }} --force-delete-tags --quiet
           gcloud container images delete gcr.io/pro-chesta/hello-world-by-push-to-gcr-2:${{ github.sha }} --force-delete-tags --quiet
+          gcloud container images delete gcr.io/pro-chesta/hello-world-by-push-to-gcr-3:${{ github.sha }} --force-delete-tags --quiet
