@@ -73,7 +73,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Authenticate to Google Cloud
         id: auth
-        uses: google-github-actions/auth@v0
+        uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: projects/123123123/locations/global/workloadIdentityPools/the-workload-pool/providers/the-provider
           service_account: only-storage-object-adm@<PROJECT_ID>.iam.gserviceaccount.com
