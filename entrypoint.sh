@@ -13,27 +13,23 @@
 ALL_IMAGE_TAG=()
 
 # detect service_account json flavour
-if [ $GOOGLE_APPLICATION_CREDENTIALS ] && ls $GOOGLE_APPLICATION_CREDENTIALS; then
+if [ "$GOOGLE_APPLICATION_CREDENTIALS" ] && ls "$GOOGLE_APPLICATION_CREDENTIALS"; then
     # workload identity
     echo "Workload identity found ..."
     cp $GOOGLE_APPLICATION_CREDENTIALS /tmp/key.json
 else
-    if [ -z $INPUT_GCLOUD_SERVICE_KEY ]; then
+    if [ -z "$INPUT_GCLOUD_SERVICE_KEY" ]; then
         echo "GCLOUD_SERVICE_KEY is a required field when workload identity is not used. Exiting ..."
         exit 1
     fi
-    # persing service account json
-    if ! echo $INPUT_GCLOUD_SERVICE_KEY | python3 -m base64 -d >/tmp/key.json 2>/dev/null; then
-        if ! echo $INPUT_GCLOUD_SERVICE_KEY >/tmp/key.json 2>/dev/null; then
-            echo "Failed to get gcloud_service_key. It could be plain text or base64 encoded service account JSON file"
-            exit 1
-        else
-            # service account found as plain text json
-            echo "This action is unable to decode INPUT_GCLOUD_SERVICE_KEY as base64. It assumes INPUT_GCLOUD_SERVICE_KEY as plain text"
-        fi
-    else
-        # service account found as base64 encoded json
+    # parsing service account json
+    if echo "$INPUT_GCLOUD_SERVICE_KEY" | python3 -m base64 -d >/tmp/key.json 2>/dev/null && python3 -m json.tool /tmp/key.json >/dev/null 2>&1; then
         echo "Successfully decoded from base64"
+    elif echo "$INPUT_GCLOUD_SERVICE_KEY" >/tmp/key.json && python3 -m json.tool /tmp/key.json >/dev/null 2>&1; then
+        echo "Using plain text service account JSON"
+    else
+        echo "Failed to get gcloud_service_key. It must be valid JSON, either plain text or base64 encoded"
+        exit 1
     fi
 fi
 
