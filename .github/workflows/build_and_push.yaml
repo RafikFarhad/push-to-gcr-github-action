@@ -143,9 +143,10 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}
-      - name: Delete images
+      - name: Delete repositories
         run: |
-          gcloud container images delete gcr.io/oss-projects-487304/hello-world-by-push-to-gcr-0:${{ github.sha }} --force-delete-tags --quiet
-          gcloud container images delete gcr.io/oss-projects-487304/hello-world-by-push-to-gcr-1:${{ github.sha }} --force-delete-tags --quiet
-          gcloud container images delete gcr.io/oss-projects-487304/hello-world-by-push-to-gcr-2:${{ github.sha }} --force-delete-tags --quiet
-          gcloud container images delete gcr.io/oss-projects-487304/hello-world-by-push-to-gcr-3:${{ github.sha }} --force-delete-tags --quiet
+          for i in 0 1 2 3; do
+            gcloud container images list-tags gcr.io/oss-projects-487304/hello-world-by-push-to-gcr-$i --format='get(digest)' | while read digest; do
+              gcloud container images delete gcr.io/oss-projects-487304/hello-world-by-push-to-gcr-$i@$digest --force-delete-tags --quiet
+            done
+          done
