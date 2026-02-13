@@ -20,7 +20,7 @@ jobs:
         id: auth
         uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: https://iam.googleapis.com/projects/65913868218/locations/global/workloadIdentityPools/push-to-gcr-pool/providers/gh-action
+          workload_identity_provider: projects/65913868218/locations/global/workloadIdentityPools/push-to-gcr-pool/providers/gh-action
           service_account: push-to-gcr-storage-object-adm@oss-projects-487304.iam.gserviceaccount.com
       - name: Building and pushing the image
         uses: ./
@@ -92,7 +92,7 @@ jobs:
         id: auth
         uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: https://iam.googleapis.com/projects/65913868218/locations/global/workloadIdentityPools/push-to-gcr-pool/providers/gh-action
+          workload_identity_provider: projects/65913868218/locations/global/workloadIdentityPools/push-to-gcr-pool/providers/gh-action
           service_account: push-to-gcr-storage-object-adm@oss-projects-487304.iam.gserviceaccount.com
       - name: Pushing the image
         uses: ./
