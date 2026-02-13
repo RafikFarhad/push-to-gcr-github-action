@@ -146,7 +146,5 @@ jobs:
       - name: Delete repositories
         run: |
           for i in 0 1 2 3; do
-            gcloud container images list-tags gcr.io/oss-projects-487304/hello-world-by-push-to-gcr-$i --format='get(digest)' | while read digest; do
-              gcloud container images delete gcr.io/oss-projects-487304/hello-world-by-push-to-gcr-$i@$digest --force-delete-tags --quiet
-            done
+            gcloud artifacts docker images delete gcr.io/oss-projects-487304/hello-world-by-push-to-gcr-$i --delete-tags --quiet 2>/dev/null || true
           done
