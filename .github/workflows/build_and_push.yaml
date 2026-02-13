@@ -15,7 +15,7 @@ jobs:
       contents: 'read'
       id-token: 'write'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
       - name: Authenticate to Google Cloud
         id: auth
         uses: google-github-actions/auth@v2
@@ -39,7 +39,7 @@ jobs:
     name: Build & push - with service account
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
       - name: Authenticate to Google Cloud
         id: auth
         uses: google-github-actions/auth@v2
@@ -62,7 +62,7 @@ jobs:
     name: Build & push - without gcloud auth action
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
       - name: Building and pushing the image
         uses: ./
         # uses: RafikFarhad/push-to-gcr-github-action@v5-rc1 # <- use this on your workflow
@@ -83,7 +83,7 @@ jobs:
       contents: 'read'
       id-token: 'write'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
       # this step mimics your build step which produce a docker image that will be pushed to gcr
       - name: Prepare the image for push_only
         run: |

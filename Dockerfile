@@ -1,4 +1,4 @@
-FROM docker:25-cli
+FROM docker:24-cli
 
 LABEL maintainer="RafikFarhad <rafikfarhad@gmail.com>"
 LABEL org.opencontainers.image.source=https://github.com/RafikFarhad/push-to-gcr-github-action
