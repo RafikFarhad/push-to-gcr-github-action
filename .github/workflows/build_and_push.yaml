@@ -145,6 +145,4 @@ jobs:
           credentials_json: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }}
       - name: Delete repositories
         run: |
-          for i in 0 1 2 3; do
-            gcloud artifacts docker images delete gcr.io/oss-projects-487304/hello-world-by-push-to-gcr-$i --delete-tags --quiet 2>/dev/null || true
-          done
+          gcloud artifacts repositories delete gcr.io --location us --quiet
